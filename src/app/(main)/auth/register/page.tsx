@@ -43,7 +43,7 @@ export default function Page() {
         </TabsContent>
 
         <TabsContent value="scout" className="flex gap-2 w-full">
-          <div className="bg-muted-foreground flex justify-center items-center w-1/2 h-full rounded-3xl">
+          <div className="bg-muted-foreground flex justify-center items-center w-1/2 h-1/2 rounded-3xl">
             <Plus />
           </div>
           <div className="flex flex-col items-center gap-5 w-full">
