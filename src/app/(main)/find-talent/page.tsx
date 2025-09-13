@@ -43,7 +43,7 @@ export default function Page() {
       {/* Talent Cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-12 [grid-template-rows:masonry]">
         {talents.map((talent, i) => (
-          <Link href={`/${talent.name}`} key={i}>
+          <Link href={`profile/${talent.name}`} key={i}>
             <CustomCard
               primary_text={talent.name}
               secondary_text={`${talent.age} Years old`}

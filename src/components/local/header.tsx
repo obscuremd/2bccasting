@@ -29,8 +29,12 @@ export default function Header() {
         </Button>
       </div>
       <div className="flex gap-2.5">
-        <Button variant={"ghost"}>Login</Button>
-        <Button>Become a Face</Button>
+        <Link href={"/auth"}>
+          <Button variant={"ghost"}>Login</Button>
+        </Link>
+        <Link href={"/dashboard"}>
+          <Button>Become a Face</Button>
+        </Link>
       </div>
     </div>
   );

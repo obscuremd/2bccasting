@@ -23,12 +23,14 @@ export default function Page() {
   const talents = data(20);
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center gap-[250px]">
+    <div className="w-full min-h-screen flex flex-col items-center gap-[10px]">
       {/* Hero Section */}
-      <div className="w-full justify-center flex items-center gap-8">
+      <div className="w-full flex items-center gap-8">
         <CustomCard image={faker.image.personPortrait()} profile={true} />
+
         <div className="w-[40%] flex flex-col gap-8">
           {/* profile infor */}
+
           <div>
             {/* profile & buttons */}
             <div className="flex w-full justify-between">
@@ -61,8 +63,13 @@ export default function Page() {
         </div>
       </div>
 
+      <div className="flex gap-2.5 items-center w-full">
+        <hr className="w-[244px] bg-foreground" />
+        <p className="text-h3 font-semibold">Portfolio </p>
+      </div>
+
       {/* Talent Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-12 [grid-template-rows:masonry]">
+      <div className="grid grid-cols-2 md:grid-cols-5 xl:grid-cols-7 gap-12 [grid-template-rows:masonry]">
         {talents.map((talent, i) => (
           <CustomCard
             key={i}

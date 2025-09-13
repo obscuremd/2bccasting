@@ -3,7 +3,7 @@ import Header from "@/components/local/header";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <main className="flex flex-col min-h-screen gap-[200px]">
+    <main className="flex flex-col min-h-screen gap-[100px]">
       {/* Sticky header */}
       <Header />
 
