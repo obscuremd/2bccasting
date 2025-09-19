@@ -1,3 +1,4 @@
+"use client";
 import Header from "@/components/local/header";
 import CircularGallery from "@/components/local/circular-gallery";
 import { Button } from "@/components/ui/button";
@@ -5,15 +6,37 @@ import { Button as MButton } from "@/components/ui/moving-border";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { faker } from "@faker-js/faker";
+import { useEffect, useState } from "react";
+import { GetProfiles } from "@/lib/ApiService";
+import toast from "react-hot-toast";
 
 export default function Home() {
-  const createData = (count = 5) =>
-    Array.from({ length: count }).map(() => ({
-      text: faker.person.fullName(),
-      image: faker.image.personPortrait(),
-    }));
+  const [data, setData] = useState<HomeUsers[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const data = createData(10);
+  useEffect(() => {
+    async function getUser() {
+      setLoading(true);
+      try {
+        const response = await GetProfiles();
+        if (response.status === "success") {
+          setData(response.data);
+          console.log(response.data);
+        } else {
+          toast.error(response.message);
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    getUser();
+  }, []);
+
+  if (loading) {
+    return <div>...Loading</div>;
+  }
+
   return (
     <div className="w-full min-h-screen flex flex-col items-center gap-[200px]">
       <Header />
@@ -42,7 +65,10 @@ export default function Home() {
           textColor="#ffffff"
           borderRadius={0.05}
           scrollEase={0.02}
-          items={data}
+          items={(Array.isArray(data) ? data : []).map((user) => ({
+            image: user.picture || "",
+            text: user.fullname,
+          }))}
         />
       </div>
       <div className="flex flex-col gap-2.5 justify-center">

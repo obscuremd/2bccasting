@@ -1,14 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import { getCurrentUser } from "@/lib/ApiService";
 
 export default function Header() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    async function fetchUser() {
+      const u = await getCurrentUser();
+      setUser(u);
+    }
+    fetchUser();
+  }, []);
 
   return (
     <header className="w-full border-b border-border bg-background">
@@ -37,14 +48,22 @@ export default function Header() {
           </Link>
         </nav>
 
-        {/* Desktop Auth Buttons */}
+        {/* Desktop Auth/Profile */}
         <div className="hidden md:flex gap-2.5">
-          <Link href="/auth">
-            <Button variant="ghost">Login</Button>
-          </Link>
-          <Link href="/dashboard">
-            <Button>Become a Face</Button>
-          </Link>
+          {user ? (
+            <Link href={`/profile/${user.fullname}`}>
+              <Button variant="ghost">{user.fullname}</Button>
+            </Link>
+          ) : (
+            <>
+              <Link href="/auth">
+                <Button variant="ghost">Login</Button>
+              </Link>
+              <Link href="/dashboard">
+                <Button>Become a Face</Button>
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Toggle */}

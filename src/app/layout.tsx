@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 import { ThemeSwitch } from "@/components/ui/theme-switch";
 import { Bai_Jamjuree } from "next/font/google";
 import Particles from "@/components/local/Particles";
+import { Toaster } from "react-hot-toast";
 
 // Load Bai Jamjuree font
 const baiJamjuree = Bai_Jamjuree({
@@ -52,6 +53,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <Toaster />
           <div className="absolute inset-0 -z-10">
             <Particles
               particleColors={["#ffffff", "#ffffff"]}

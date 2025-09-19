@@ -1,26 +1,37 @@
+"use client";
 import CustomCard from "@/components/local/card";
-import Header from "@/components/local/header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { faker } from "@faker-js/faker";
+import { GetProfiles } from "@/lib/ApiService";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function Page() {
-  // Generate fake people data
-  const data = (count = 5) =>
-    Array.from({ length: count }).map(() => ({
-      name: faker.person.fullName(),
-      age: faker.number.int({ min: 18, max: 60 }),
-      image: faker.image.personPortrait(),
-      category: faker.helpers.arrayElement([
-        "Actor",
-        "Model",
-        "Director",
-        "Performer",
-      ]),
-    }));
+  const [data, setData] = useState<HomeUsers[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const talents = data(20);
+  useEffect(() => {
+    async function getUser() {
+      setLoading(true);
+      try {
+        const response = await GetProfiles();
+        if (response.status === "success") {
+          setData(response.data);
+        } else {
+          toast.error(response.message);
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    getUser();
+  }, []);
+
+  if (loading) {
+    return <div>...Loading</div>;
+  }
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center gap-[250px]">
@@ -42,13 +53,13 @@ export default function Page() {
 
       {/* Talent Cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-12 [grid-template-rows:masonry]">
-        {talents.map((talent, i) => (
-          <Link href={`profile/${talent.name}`} key={i}>
+        {data.map((talent, i) => (
+          <Link href={`profile/${talent._id}`} key={i}>
             <CustomCard
-              primary_text={talent.name}
+              primary_text={talent.fullname}
               secondary_text={`${talent.age} Years old`}
-              category={talent.category}
-              image={talent.image}
+              category={talent.role}
+              image={talent.picture}
             />
           </Link>
         ))}

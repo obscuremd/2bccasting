@@ -1,17 +1,86 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { Auth } from "@/lib/ApiService";
+import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function Page() {
   const router = useRouter();
 
-  function Authenticate() {
-    router.push("/auth/register");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); // dialog control
+
+  async function Authenticate() {
+    setLoading(true);
+    try {
+      const res = await Auth({ email, password });
+      if (res.status === "error") {
+        toast.error(res.message);
+        return;
+      }
+
+      // open dialog if successful
+      setIsOpen(true);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
     <div className="flex gap-2.5">
+      {/* Success Dialog */}
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="flex flex-col gap-10">
+          <DialogHeader>
+            <DialogTitle>Otp Verification</DialogTitle>
+            <DialogDescription>
+              a six digit Otp has been sent to your email, please input it below
+            </DialogDescription>
+          </DialogHeader>
+          <InputOTP maxLength={6}>
+            <InputOTPGroup>
+              <InputOTPSlot index={0} />
+              <InputOTPSlot index={1} />
+              <InputOTPSlot index={2} />
+            </InputOTPGroup>
+            <InputOTPSeparator />
+            <InputOTPGroup>
+              <InputOTPSlot index={3} />
+              <InputOTPSlot index={4} />
+              <InputOTPSlot index={5} />
+            </InputOTPGroup>
+          </InputOTP>
+          <Button
+            className="mt-4 w-full"
+            onClick={() => {
+              setIsOpen(false);
+              router.push("/auth/register");
+            }}
+          >
+            Continue
+          </Button>
+        </DialogContent>
+      </Dialog>
+
+      {/* Splash + Form */}
       <img
         src="/splash.png"
         alt="Splash"
@@ -27,10 +96,26 @@ export default function Page() {
             opportunities, and showcase your talent—all in one place.
           </p>
         </div>
-        <Input placeholder="Email" className="w-full" />
-        <Input placeholder="Password" className="w-full" />
-        <Button onClick={Authenticate} className="w-full">
-          Continue
+        <Input
+          placeholder="Email"
+          className="w-full"
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Input
+          placeholder="Password"
+          type="password"
+          className="w-full"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <Button onClick={Authenticate} className="w-full" disabled={loading}>
+          {loading ? (
+            <>
+              <Loader2Icon className="animate-spin" />
+              Please wait
+            </>
+          ) : (
+            "Continue"
+          )}
         </Button>
         <div className="flex gap-5 items-center">
           <p className="text-title2 font-semibold">General Policy</p>
@@ -38,7 +123,7 @@ export default function Page() {
           <p className="text-title2 font-semibold">Terms and Conditions</p>
         </div>
         <p className="text-title2 font-medium text-muted-foreground">
-          By SIgning in you’re agreeing to our Terms and conditions and policies
+          By signing in you’re agreeing to our Terms and conditions and policies
         </p>
       </div>
     </div>
