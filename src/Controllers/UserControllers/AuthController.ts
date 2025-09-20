@@ -67,7 +67,7 @@ export async function verifyOtp(data: OtpData) {
     { expiresIn: "2d" }
   );
 
-  return { message: "Otp Verified successfully", token, status: 200 };
+  return { message: "Otp Verified successfully", token: token, status: 200 };
 }
 
 export async function register(data: User) {
@@ -94,5 +94,5 @@ export async function register(data: User) {
     { expiresIn: "2d" }
   );
 
-  return { message: "User registered", status: 201, token };
+  return { message: "User registered", status: 201, token: token };
 }

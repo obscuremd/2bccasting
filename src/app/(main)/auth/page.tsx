@@ -14,7 +14,7 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { Auth } from "@/lib/ApiService";
+import { Auth, OtpVerify } from "@/lib/ApiService";
 import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -25,6 +25,7 @@ export default function Page() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false); // dialog control
 
@@ -36,9 +37,22 @@ export default function Page() {
         toast.error(res.message);
         return;
       }
-
       // open dialog if successful
       setIsOpen(true);
+    } finally {
+      setLoading(false);
+    }
+  }
+  async function VerifyOtp() {
+    setLoading(true);
+    try {
+      const res = await OtpVerify({ email, code: Number(code) });
+      if (res.status === "error") {
+        toast.error(res.message);
+        return;
+      }
+      toast("Otp Verified");
+      router.push("/dashboard");
     } finally {
       setLoading(false);
     }
@@ -55,7 +69,7 @@ export default function Page() {
               a six digit Otp has been sent to your email, please input it below
             </DialogDescription>
           </DialogHeader>
-          <InputOTP maxLength={6}>
+          <InputOTP maxLength={6} onChange={(value) => setCode(value)}>
             <InputOTPGroup>
               <InputOTPSlot index={0} />
               <InputOTPSlot index={1} />
@@ -68,14 +82,15 @@ export default function Page() {
               <InputOTPSlot index={5} />
             </InputOTPGroup>
           </InputOTP>
-          <Button
-            className="mt-4 w-full"
-            onClick={() => {
-              setIsOpen(false);
-              router.push("/auth/register");
-            }}
-          >
-            Continue
+          <Button onClick={VerifyOtp} className="w-full" disabled={loading}>
+            {loading ? (
+              <>
+                <Loader2Icon className="animate-spin" />
+                Please wait
+              </>
+            ) : (
+              "Continue"
+            )}
           </Button>
         </DialogContent>
       </Dialog>

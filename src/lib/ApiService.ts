@@ -32,6 +32,9 @@ export async function OtpVerify({
       code,
       email,
     });
+
+    console.log("OtpVerify response:", response);
+
     // ✅ store token if returned
     if (response.data.token) {
       localStorage.setItem("auth_token", response.data.token);
@@ -71,8 +74,12 @@ interface DecodedToken {
 
 export async function getCurrentUser(): Promise<User | null> {
   const token = localStorage.getItem("auth_token");
+  console.log(token);
 
-  if (!token) return null;
+  if (!token) {
+    console.log("no token");
+    return null;
+  }
 
   try {
     // 1. Decode token
