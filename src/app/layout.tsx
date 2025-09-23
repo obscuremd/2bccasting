@@ -5,7 +5,8 @@ import { ThemeSwitch } from "@/components/ui/theme-switch";
 import { Bai_Jamjuree } from "next/font/google";
 import Particles from "@/components/local/Particles";
 import { Toaster } from "react-hot-toast";
-
+import { app } from "@/lib/firebaseConfig";
+app;
 // Load Bai Jamjuree font
 const baiJamjuree = Bai_Jamjuree({
   subsets: ["latin"],

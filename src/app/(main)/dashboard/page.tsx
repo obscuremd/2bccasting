@@ -1,56 +1,98 @@
 "use client";
 import CustomCard from "@/components/local/card";
+import ImageUploadUi from "@/components/local/ImageUpload";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { getCurrentUser } from "@/lib/ApiService";
 import { faker } from "@faker-js/faker";
-import { Download } from "lucide-react";
+import { Download, Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import React, { SetStateAction, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function Page() {
   const router = useRouter();
+  const [data, setData] = useState<User | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [editLoading, setEditLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); // dialog control
 
-  // Generate fake people data
-  const data = (count = 5) =>
-    Array.from({ length: count }).map(() => ({
-      name: faker.person.fullName(),
-      age: faker.number.int({ min: 18, max: 60 }),
-      image: faker.image.personPortrait(),
-      category: faker.helpers.arrayElement([
-        "Actor",
-        "Model",
-        "Director",
-        "Performer",
-      ]),
-    }));
+  const getAge = (dob: Date) => {
+    const diff = Date.now() - dob.getTime();
+    return new Date(diff).getUTCFullYear() - 1970;
+  };
 
-  const talents = data(20);
+  useEffect(() => {
+    async function GetUser() {
+      setLoading(true);
+      try {
+        const response = await getCurrentUser();
+        if (response === null) {
+          toast.error("Unauthorized");
+          router.push("/");
+          return;
+        }
+        setData(response);
+      } finally {
+        setLoading(false);
+      }
+    }
+    GetUser();
+  }, []);
+
+  function Logout() {
+    localStorage.removeItem("auth_token");
+    router.push("/");
+  }
+
+  const images =
+    data?.category === "scout" ? data.saved_profiles : data?.portfolio_pictures;
+
+  if (loading) {
+    return <p className="text-center mt-8">Loading...</p>;
+  }
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center gap-[10px]">
       {/* Hero Section */}
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <EditProfile loading={editLoading} />
+      </Dialog>
+
       <div className="w-full flex items-center gap-8">
-        <CustomCard image={faker.image.personPortrait()} profile={true} />
+        <CustomCard image={data?.profile_picture} profile={true} />
 
         <div className="w-[40%] flex flex-col gap-8">
           {/* profile infor */}
 
           <div>
             {/* profile & buttons */}
-            <div className="flex w-full justify-between">
-              <p className="text-h3 font-semibold">{faker.person.fullName()}</p>
+            <div className="flex w-full gap-4 items-center">
+              <p className="text-h3 font-semibold">{data?.fullname}</p>
               <div className="flex gap-2">
-                <Button variant={"secondary"}>Edit Profile</Button>
+                <Button variant={"secondary"} onClick={() => setIsOpen(true)}>
+                  Edit Profile
+                </Button>
                 <Button onClick={() => router.push("/vip")}>
                   🌟 Become a Vip
                 </Button>
               </div>
             </div>
-            <p>Model</p>
-            <p>{faker.lorem.paragraph(5)}</p>
+            <p>{data?.category}</p>
+            <p>{data?.bio}</p>
           </div>
           <div className="flex flex-col gap-2">
             <div className="flex gap-8">
               <div className=" flex gap-2 items-center">
-                <p className="text-title1 font-bold">14</p>
+                <p className="text-title1 font-bold">
+                  {data?.portfolio_pictures.length}
+                </p>
                 <p className="text-title2 font-medium">Portfolio Pictures</p>
               </div>
               <div className=" flex gap-2 items-center">
@@ -62,21 +104,29 @@ export default function Page() {
                 <p className="text-title2 font-medium">Saves</p>
               </div>
             </div>
-            <p className="font-medium text-muted-foreground">
-              Upgrade to VIP to see who has viewed or saved your profile, and
-              connect directly with them.
-            </p>
+            {data?.vip ? (
+              ""
+            ) : (
+              <p className="font-medium text-muted-foreground">
+                Upgrade to VIP to see who has viewed or saved your profile, and
+                connect directly with them.
+              </p>
+            )}
           </div>
           <div className="grid grid-cols-2 gap-y-4 gap-x-2">
-            <p>Age: {faker.number.int({ min: 18, max: 60 })} Years Old</p>
-            <p>Gender: Male</p>
-            <p>Ethnicity: White</p>
-            <p>Country: Nigeria</p>
-            <p>State: Lagos State</p>
-            <p>Experience: 5 Years</p>
+            <p>
+              Age:{" "}
+              {data?.date_of_birth
+                ? getAge(new Date(data.date_of_birth))
+                : "N/A"}{" "}
+              Years Old
+            </p>
+            <p>Gender: {data?.gender}</p>
+            <p>Country: {data?.location}</p>
+            <p>State: {data?.location}</p>
           </div>
-          <Button>
-            <Download /> Download CV
+          <Button variant={"destructive"} onClick={Logout}>
+            <Download /> Logoout
           </Button>
         </div>
       </div>
@@ -88,16 +138,37 @@ export default function Page() {
 
       {/* Talent Cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 xl:grid-cols-7 gap-12 [grid-template-rows:masonry]">
-        {talents.map((talent, i) => (
-          <CustomCard
-            key={i}
-            primary_text={talent.name}
-            secondary_text={`${talent.age} Years old`}
-            category={talent.category}
-            image={talent.image}
-          />
-        ))}
+        {images && images.length > 0 ? (
+          images.map((pic, i) => <CustomCard key={i} image={pic} profile />)
+        ) : (
+          <p>No Portfolio Pictures</p>
+        )}
       </div>
     </div>
+  );
+}
+
+function EditProfile({ loading }: { loading: boolean }) {
+  const [imageUrl, setImageUrl] = useState<File | null>(null);
+  return (
+    <DialogContent className="flex flex-col gap-10">
+      <DialogHeader>
+        <DialogTitle>Otp Verification</DialogTitle>
+        <DialogDescription>
+          a six digit Otp has been sent to your email, please input it below
+        </DialogDescription>
+        <ImageUploadUi file={imageUrl} setFile={setImageUrl} />
+      </DialogHeader>
+      <Button className="w-full" disabled={loading}>
+        {loading ? (
+          <>
+            <Loader2Icon className="animate-spin" />
+            Please wait
+          </>
+        ) : (
+          "Continue"
+        )}
+      </Button>
+    </DialogContent>
   );
 }

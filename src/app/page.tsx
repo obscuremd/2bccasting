@@ -66,7 +66,7 @@ export default function Home() {
           borderRadius={0.05}
           scrollEase={0.02}
           items={(Array.isArray(data) ? data : []).map((user) => ({
-            image: user.picture || "",
+            image: user.picture || "https://picsum.photos/800/600",
             text: user.fullname,
           }))}
         />
