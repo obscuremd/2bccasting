@@ -80,6 +80,9 @@ export async function GET(req: NextRequest) {
             picture: "$portfolio_pictures", // rename field
             fullname: 1,
             role: 1,
+            location: 1, // ✅ include location
+            gender: 1, // ✅ include gender
+
             age: {
               $dateDiff: {
                 startDate: "$date_of_birth",

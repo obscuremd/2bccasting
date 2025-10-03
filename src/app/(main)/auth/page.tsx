@@ -50,9 +50,13 @@ export default function Page() {
       if (res.status === "error") {
         toast.error(res.message);
         return;
+      } else if (res.status === "pending") {
+        toast.loading(res.message);
+        router.push("/auth/register");
+      } else {
+        toast("Otp Verified");
+        router.push("/dashboard");
       }
-      toast("Otp Verified");
-      router.push("/dashboard");
     } finally {
       setLoading(false);
     }

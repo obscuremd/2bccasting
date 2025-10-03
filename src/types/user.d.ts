@@ -41,5 +41,7 @@ interface HomeUsers {
   fullname: string;
   role: string;
   picture: string;
+  location: string;
+  gender: string;
   age: number;
 }

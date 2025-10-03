@@ -31,31 +31,10 @@ const UserSchema = new mongoose.Schema<IUserDoc>(
     saved_profiles: [
       { type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] },
     ],
-
-    role: {
-      type: String,
-      required: function (this: IUserDoc) {
-        return this.category === "talent";
-      },
-    },
-    portfolio_pictures: {
-      type: [String],
-      required: function (this: IUserDoc) {
-        return this.category === "talent";
-      },
-    },
-    cv: {
-      type: String,
-      required: function (this: IUserDoc) {
-        return this.category === "talent";
-      },
-    },
-    vip: {
-      type: Boolean,
-      required: function (this: IUserDoc) {
-        return this.category === "talent";
-      },
-    },
+    role: { type: String },
+    portfolio_pictures: { type: [String], default: [] },
+    cv: { type: String, default: "" },
+    vip: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

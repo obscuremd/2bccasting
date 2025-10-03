@@ -1,5 +1,6 @@
 "use client";
 import CustomCard from "@/components/local/card";
+import { DatePicker } from "@/components/local/datePicker";
 import ImageUploadUi from "@/components/local/ImageUpload";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,11 +10,32 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { Textarea } from "@/components/ui/textarea";
 import { getCurrentUser } from "@/lib/ApiService";
 import { faker } from "@faker-js/faker";
+import axios from "axios";
 import { Download, Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { SetStateAction, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function Page() {
@@ -33,12 +55,12 @@ export default function Page() {
       setLoading(true);
       try {
         const response = await getCurrentUser();
-        if (response === null) {
+        if (response.user === null) {
           toast.error("Unauthorized");
           router.push("/");
           return;
         }
-        setData(response);
+        setData(response.user);
       } finally {
         setLoading(false);
       }
@@ -61,9 +83,9 @@ export default function Page() {
   return (
     <div className="w-full min-h-screen flex flex-col items-center gap-[10px]">
       {/* Hero Section */}
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <EditProfile loading={editLoading} />
-      </Dialog>
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <EditProfile user={data} setUser={setData} />
+      </Sheet>
 
       <div className="w-full flex items-center gap-8">
         <CustomCard image={data?.profile_picture} profile={true} />
@@ -79,9 +101,11 @@ export default function Page() {
                 <Button variant={"secondary"} onClick={() => setIsOpen(true)}>
                   Edit Profile
                 </Button>
-                <Button onClick={() => router.push("/vip")}>
-                  🌟 Become a Vip
-                </Button>
+                {data?.vip === false && (
+                  <Button onClick={() => router.push("/vip")}>
+                    🌟 Become a Vip
+                  </Button>
+                )}
               </div>
             </div>
             <p>{data?.category}</p>
@@ -148,27 +172,183 @@ export default function Page() {
   );
 }
 
-function EditProfile({ loading }: { loading: boolean }) {
-  const [imageUrl, setImageUrl] = useState<File | null>(null);
+function EditProfile({
+  user,
+  setUser,
+}: {
+  user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+}) {
+  const [loading, setLoading] = useState(false);
+
+  const [countries, setCountries] = useState<
+    { value: string; label: string }[]
+  >([]);
+
+  const roles = [
+    "Actor",
+    "Model",
+    "Hostess",
+    "Voice Over Artist",
+    "Fashion Designer",
+    "Presenter",
+    "Influencer",
+    "Script Writer",
+    "Movie Producer",
+    "Movie Director",
+    "Graphics Designer",
+    "Web Developer",
+    "Digital Marketer",
+    "Cinematographer",
+    "Event Planner",
+    "Driver",
+  ];
+
+  React.useEffect(() => {
+    fetch("/countries.json")
+      .then((res) => res.json())
+      .then((data) => setCountries(data));
+  }, []);
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+    fullname: "",
+    bio: "",
+    gender: "",
+    location: "",
+    category: "",
+    date_of_birth: "",
+    role: "",
+  });
+
+  const saveChanges = async () => {
+    if (!user) return;
+    setLoading(true);
+
+    try {
+      // remove empty fields
+      const filteredData = Object.fromEntries(
+        Object.entries(data).filter(
+          ([_, value]) => value && value.trim() !== ""
+        )
+      );
+
+      if (Object.keys(filteredData).length === 0) {
+        toast.error("Please fill at least one field before saving.");
+        setLoading(false);
+        return;
+      }
+
+      const res = await axios.put("/api/user", {
+        id: user._id,
+        ...filteredData,
+      });
+
+      if (res.status === 200) {
+        toast.success("Profile updated successfully");
+        console.log("response:", res);
+        const updatedUser = await getCurrentUser();
+        setUser(updatedUser.user);
+      } else {
+        toast.error("Error updating profile");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Unknown error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <DialogContent className="flex flex-col gap-10">
-      <DialogHeader>
-        <DialogTitle>Otp Verification</DialogTitle>
-        <DialogDescription>
-          a six digit Otp has been sent to your email, please input it below
-        </DialogDescription>
-        <ImageUploadUi file={imageUrl} setFile={setImageUrl} />
-      </DialogHeader>
-      <Button className="w-full" disabled={loading}>
-        {loading ? (
-          <>
-            <Loader2Icon className="animate-spin" />
-            Please wait
-          </>
-        ) : (
-          "Continue"
-        )}
-      </Button>
-    </DialogContent>
+    <SheetContent>
+      <SheetHeader>
+        <SheetTitle>Edit profile</SheetTitle>
+        <SheetDescription>
+          Make changes to your profile here. Click save when you&apos;re done.
+        </SheetDescription>
+      </SheetHeader>
+
+      <div className="grid flex-1 auto-rows-min gap-6 px-4">
+        <Input
+          placeholder="Email"
+          className="w-full"
+          onChange={(e) =>
+            setData((prev) => ({ ...prev, email: e.target.value }))
+          }
+        />
+        <Input
+          placeholder="Full Name"
+          className="w-full"
+          onChange={(e) =>
+            setData((prev) => ({ ...prev, fullname: e.target.value }))
+          }
+        />
+        <Select
+          onValueChange={(value) => setData((p) => ({ ...p, gender: value }))}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="what's your gender" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="male">Male</SelectItem>
+              <SelectItem value="female">Female</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Select
+          onValueChange={(value) => setData((p) => ({ ...p, role: value }))}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="what do you do" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {roles.map((role, index) => (
+                <SelectItem key={index} value={role.toLowerCase()}>
+                  {role}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <DatePicker
+          date={data.date_of_birth ? new Date(data.date_of_birth) : undefined}
+          setDate={(e) =>
+            setData((p) => ({ ...p, date_of_birth: e?.toString() ?? "" }))
+          }
+        />
+        <Select
+          onValueChange={(value) => setData((p) => ({ ...p, location: value }))}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="what's your location" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {countries.map((item, index) => (
+                <SelectItem key={index} value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Textarea
+          className="h-full"
+          placeholder="Give us a brief description"
+          onChange={(e) => setData((p) => ({ ...p, bio: e.target.value }))}
+        />
+      </div>
+      <SheetFooter>
+        <Button onClick={saveChanges} disabled={loading}>
+          {loading ? <Loader2Icon className="animate-spin" /> : "Save changes"}
+        </Button>
+        <SheetClose asChild>
+          <Button variant="outline">Close</Button>
+        </SheetClose>
+      </SheetFooter>
+    </SheetContent>
   );
 }

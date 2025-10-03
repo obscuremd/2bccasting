@@ -7,9 +7,51 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
+// shadcn imports
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Slider } from "@/components/ui/slider";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 export default function Page() {
+  const roles = [
+    "Actor",
+    "Model",
+    "Hostess",
+    "Voice Over Artist",
+    "Fashion Designer",
+    "Presenter",
+    "Influencer",
+    "Script Writer",
+    "Movie Producer",
+    "Movie Director",
+    "Graphics Designer",
+    "Web Developer",
+    "Digital Marketer",
+    "Cinematographer",
+    "Event Planner",
+    "Driver",
+  ];
   const [data, setData] = useState<HomeUsers[]>([]);
   const [loading, setLoading] = useState(false);
+
+  // filter states
+  const [ageRange, setAgeRange] = useState<[number, number]>([18, 60]);
+  const [sex, setSex] = useState<string>("");
+  const [location, setLocation] = useState<string>("");
+  const [role, setRole] = useState<string>("");
 
   useEffect(() => {
     async function getUser() {
@@ -33,6 +75,20 @@ export default function Page() {
     return <div>...Loading</div>;
   }
 
+  // derived filtered data
+  const filteredData = data.filter((talent) => {
+    const matchesAge = talent.age >= ageRange[0] && talent.age <= ageRange[1];
+    const matchesSex = sex
+      ? talent.gender.toLowerCase() === sex.toLowerCase()
+      : true;
+    const matchesLocation = location
+      ? talent.location.toLowerCase().includes(location.toLowerCase())
+      : true;
+    const matchesRole = role ? talent.role === role : true;
+
+    return matchesAge && matchesSex && matchesLocation && matchesRole;
+  });
+
   return (
     <div className="w-full min-h-screen flex flex-col items-center gap-[250px]">
       {/* Hero Section */}
@@ -47,13 +103,83 @@ export default function Page() {
         </p>
         <div className="flex gap-3 w-[50%] max-md:w-[90%]">
           <Input placeholder="Find a Talent" className="w-full" />
-          <Button>Find New Talent</Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline">Filters</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Filter Options</DialogTitle>
+                <DialogDescription>
+                  Narrow down your search with filters
+                </DialogDescription>
+              </DialogHeader>
+
+              {/* Age filter */}
+              <div className="flex flex-col gap-2">
+                <p className="font-medium">Age Range</p>
+                <Slider
+                  min={10}
+                  max={80}
+                  step={1}
+                  value={ageRange}
+                  onValueChange={(v) =>
+                    setAgeRange([v[0], v[1]] as [number, number])
+                  }
+                />
+                <p>
+                  {ageRange[0]} - {ageRange[1]} years
+                </p>
+              </div>
+
+              {/* Sex filter */}
+              <div className="flex flex-col gap-2">
+                <p className="font-medium">Sex</p>
+                <Select onValueChange={(val) => setSex(val)} value={sex}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select sex" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Male">Male</SelectItem>
+                    <SelectItem value="Female">Female</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Location filter */}
+              <div className="flex flex-col gap-2">
+                <p className="font-medium">Location</p>
+                <Input
+                  placeholder="Enter location"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                />
+              </div>
+
+              {/* Role filter */}
+              <div className="flex flex-col gap-2">
+                <p className="font-medium">Role</p>
+                <Select onValueChange={(val) => setRole(val)} value={role}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {roles.map((role, index) => (
+                      <SelectItem key={index} value={role.toLowerCase()}>
+                        {role}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
       {/* Talent Cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-12 [grid-template-rows:masonry]">
-        {data.map((talent, i) => (
+        {filteredData.map((talent, i) => (
           <Link href={`profile/${talent._id}`} key={i}>
             <CustomCard
               primary_text={talent.fullname}

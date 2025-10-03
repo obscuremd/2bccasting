@@ -54,7 +54,19 @@ export async function verifyOtp(data: OtpData) {
 
   const user = await User.findOne({ email: data.email });
   await Otp.deleteOne({ email: data.email });
-  if (!user) return { message: "User not found, please register", status: 404 };
+  if (!user) {
+    const token = jwt.sign(
+      { user: false, email: data.email },
+      process.env.NEXT_PUBLIC_JWT_SECRET as string,
+      { expiresIn: "2d" }
+    );
+    return {
+      message: "User not found, please register",
+      token: token,
+      status: 200,
+      user: false,
+    };
+  }
 
   const token = jwt.sign(
     {
@@ -67,12 +79,37 @@ export async function verifyOtp(data: OtpData) {
     { expiresIn: "2d" }
   );
 
-  return { message: "Otp Verified successfully", token: token, status: 200 };
+  return {
+    message: "Otp Verified successfully",
+    token: token,
+    status: 200,
+    user: true,
+  };
 }
 
 export async function register(data: User) {
-  if (!data.email || !data.password)
-    return { message: "Missing fields", status: 400 };
+  // list of required fields from your schema
+  const requiredFields = [
+    "email",
+    "password",
+    "fullname",
+    "bio",
+    "gender",
+    "location",
+    "category",
+    "date_of_birth",
+  ];
+
+  // check for missing fields
+  const missingFields = requiredFields.filter(
+    (field) => !data[field as keyof AuthData]
+  );
+  if (missingFields.length > 0) {
+    return {
+      message: `Missing required fields: ${missingFields.join(", ")}`,
+      status: 400,
+    };
+  }
 
   const existing = await User.findOne({ email: data.email });
   if (existing) return { message: "User already exists", status: 400 };

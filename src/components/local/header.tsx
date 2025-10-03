@@ -11,15 +11,54 @@ export default function Header() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
-  const [user, setUser] = useState<User | null>(null);
+  const [auth, setAuth] = useState<{
+    user: User | null;
+    status: "success" | "error" | "pending";
+  }>({ user: null, status: "error" });
 
   useEffect(() => {
     async function fetchUser() {
       const u = await getCurrentUser();
-      setUser(u);
+      setAuth(u);
     }
     fetchUser();
   }, []);
+
+  const renderAuthButtons = () => {
+    if (auth.status === "pending") {
+      return (
+        <Button onClick={() => router.push("/auth/register")} variant="ghost">
+          Complete Registration
+        </Button>
+      );
+    }
+    if (auth.status === "success" && auth.user) {
+      return (
+        <Link href={"/dashboard"}>
+          <Button variant="ghost">
+            <img
+              src={
+                auth.user.profile_picture ||
+                "https://images.unsplash.com/vector-1739893036643-a343cc79901b?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fHVzZXIlMjBpY29ufGVufDB8fDB8fHww"
+              }
+              className="h-5 w-5 rounded-full"
+            />
+            {auth.user.fullname}
+          </Button>
+        </Link>
+      );
+    }
+    return (
+      <>
+        <Link href="/auth">
+          <Button variant="ghost">Login</Button>
+        </Link>
+        <Link href="/auth">
+          <Button>Become a Face</Button>
+        </Link>
+      </>
+    );
+  };
 
   return (
     <header className="w-full border-b border-border bg-background">
@@ -49,22 +88,7 @@ export default function Header() {
         </nav>
 
         {/* Desktop Auth/Profile */}
-        <div className="hidden md:flex gap-2.5">
-          {user ? (
-            <Link href={`/profile/${user.fullname}`}>
-              <Button variant="ghost">{user.fullname}</Button>
-            </Link>
-          ) : (
-            <>
-              <Link href="/auth">
-                <Button variant="ghost">Login</Button>
-              </Link>
-              <Link href="/dashboard">
-                <Button>Become a Face</Button>
-              </Link>
-            </>
-          )}
-        </div>
+        <div className="hidden md:flex gap-2.5">{renderAuthButtons()}</div>
 
         {/* Mobile Menu Toggle */}
         <button
@@ -104,16 +128,7 @@ export default function Header() {
             </Button>
           </Link>
 
-          <div className="flex gap-2 pt-2">
-            <Link href="/auth" onClick={() => setIsOpen(false)}>
-              <Button variant="ghost" className="w-full">
-                Login
-              </Button>
-            </Link>
-            <Link href="/dashboard" onClick={() => setIsOpen(false)}>
-              <Button className="w-full">Become a Face</Button>
-            </Link>
-          </div>
+          <div className="flex gap-2 pt-2">{renderAuthButtons()}</div>
         </div>
       )}
     </header>

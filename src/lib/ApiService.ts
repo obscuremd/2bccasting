@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { jwtDecode } from "jwt-decode";
 
 export async function Auth({
@@ -26,7 +26,7 @@ export async function OtpVerify({
 }: {
   code: number;
   email: string;
-}): Promise<{ message: string; status: "success" | "error" }> {
+}): Promise<{ message: string; status: "success" | "error" | "pending" }> {
   try {
     const response = await axios.post("/api/user?action=verify-otp", {
       code,
@@ -34,6 +34,10 @@ export async function OtpVerify({
     });
 
     console.log("OtpVerify response:", response);
+    if (response.data.user === false && response.status === 200) {
+      localStorage.setItem("auth_token", response.data.token);
+      return { message: "Oops you dont have an account", status: "pending" };
+    }
 
     // ✅ store token if returned
     if (response.data.token) {
@@ -45,6 +49,93 @@ export async function OtpVerify({
     return { message: "Error Registering", status: "error" };
   }
 }
+
+export async function Register({
+  email,
+  password,
+  fullname,
+  bio,
+  gender,
+  location,
+  category,
+  date_of_birth,
+  profile_picture,
+  role,
+}: {
+  email: string;
+  password: string;
+  fullname: string;
+  bio: string;
+  gender: string;
+  location: string;
+  category: string;
+  date_of_birth: string;
+  profile_picture: string;
+  role: string;
+}): Promise<{ message: string; status: "success" | "error" }> {
+  // ✅ Basic validation
+  if (
+    !email.trim() ||
+    !password.trim() ||
+    !fullname.trim() ||
+    !bio.trim() ||
+    !gender ||
+    !location ||
+    !date_of_birth ||
+    (category === "talent" && !role) ||
+    (category === "scout" && !profile_picture)
+  ) {
+    return {
+      message: "All fields must be filled",
+      status: "error",
+    };
+  }
+  try {
+    const response = await axios.post("/api/user?action=register", {
+      email,
+      password,
+      fullname,
+      bio,
+      gender,
+      location,
+      category,
+      date_of_birth,
+      profile_picture,
+      role,
+    });
+
+    if (response.status === 200) {
+      if (response.data.token) {
+        localStorage.setItem("auth_token", response.data.token);
+      }
+
+      return {
+        message: response.data.message,
+        status: "success",
+      };
+    } else {
+      return {
+        message: response.data.message,
+        status: "error",
+      };
+    }
+  } catch (err) {
+    const error = err as AxiosError<{ message?: string }>;
+
+    if (error.response?.data?.message) {
+      return {
+        message: error.response.data.message,
+        status: "error",
+      };
+    }
+
+    return {
+      message: "Unexpected error",
+      status: "error",
+    };
+  }
+}
+
 export async function GetProfiles(): Promise<{
   message: string;
   status: "success" | "error";
@@ -68,17 +159,20 @@ export async function GetProfiles(): Promise<{
 }
 
 interface DecodedToken {
-  id: string;
+  id?: string;
+  user: boolean;
+  email: string;
   exp: number; // expiry timestamp
 }
 
-export async function getCurrentUser(): Promise<User | null> {
+export async function getCurrentUser(): Promise<{
+  user: User | null;
+  status: "success" | "error" | "pending";
+}> {
   const token = localStorage.getItem("auth_token");
-  console.log(token);
 
   if (!token) {
-    console.log("no token");
-    return null;
+    return { user: null, status: "error" };
   }
 
   try {
@@ -88,23 +182,32 @@ export async function getCurrentUser(): Promise<User | null> {
     // 2. Check expiration
     if (decoded.exp * 1000 < Date.now()) {
       localStorage.removeItem("auth_token");
-      return null;
+      return { user: null, status: "error" };
     }
 
-    // 3. Use decoded.id to fetch user
+    // 3. Handle pending registration
+    if (decoded.user === false) {
+      return { user: null, status: "pending" };
+    }
+
+    // 4. Fetch user by ID
+    if (!decoded.id) {
+      return { user: null, status: "error" };
+    }
+
     const response = await axios.get(`/api/user?id=${decoded.id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
     if (response.data) {
-      return response.data as User;
+      return { user: response.data as User, status: "success" };
     }
 
     localStorage.removeItem("auth_token");
-    return null;
+    return { user: null, status: "error" };
   } catch (error) {
     console.error("Token validation failed:", error);
     localStorage.removeItem("auth_token");
-    return null;
+    return { user: null, status: "error" };
   }
 }

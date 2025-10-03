@@ -3,15 +3,18 @@ import { useEffect, useState } from "react";
 import CustomCard from "@/components/local/card";
 import { Button } from "@/components/ui/button";
 import { Download, Heart, Phone } from "lucide-react";
+import { useParams } from "next/navigation";
 
 // Next.js Page Component with dynamic params
-export default function Page({ params }: { params: { id: string } }) {
+export default function Page() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const { id } = useParams<{ id: string }>();
+
   useEffect(() => {
-    if (params?.id) {
-      fetch(`/api/user?id=${params.id}`)
+    if (id) {
+      fetch(`/api/user?id=${id}`)
         .then((res) => res.json())
         .then((data) => {
           setUser(data);
@@ -22,7 +25,7 @@ export default function Page({ params }: { params: { id: string } }) {
           setLoading(false);
         });
     }
-  }, [params?.id]);
+  }, [id]);
 
   if (loading) {
     return <p className="text-center p-10">Loading profile...</p>;

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { ThemeSwitch } from "@/components/ui/theme-switch";
-import { Bai_Jamjuree } from "next/font/google";
+import { Bai_Jamjuree, Montserrat } from "next/font/google";
 import Particles from "@/components/local/Particles";
 import { Toaster } from "react-hot-toast";
 import { app } from "@/lib/firebaseConfig";
@@ -11,8 +11,10 @@ app;
 const baiJamjuree = Bai_Jamjuree({
   subsets: ["latin"],
   weight: ["200"],
-  variable: "--font-bai-jamjuree",
-  display: "swap",
+});
+const playpenSansDeva = Montserrat({
+  subsets: ["latin"],
+  weight: ["200"],
 });
 
 export const metadata: Metadata = {
@@ -47,7 +49,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${baiJamjuree.variable} antialiased relative`}>
+      <body className={`${baiJamjuree.className} antialiased relative`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -70,7 +72,7 @@ export default function RootLayout({
           <div className="fixed top-4 right-4 z-20">
             <ThemeSwitch />
           </div>
-          <div className="z-10 p-16">{children}</div>
+          <div className="z-10 p-16 pt-8">{children}</div>
         </ThemeProvider>
       </body>
     </html>
