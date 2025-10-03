@@ -107,7 +107,7 @@ export default function Page() {
       {/* Paystack Button */}
       {plan !== undefined && (
         <PaystackButton
-          publicKey={process.env.NEXT_PUBLIC_PAYSTACK_KEY ?? ""}
+          publicKey={process.env.NEXT_PUBLIC_LIVE_PAYSTACK_KEY ?? ""}
           amount={plans[plan].amount}
           email={userEmail}
           text="Continue"
