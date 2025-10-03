@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "preinstall": "npx npm@10 install --legacy-peer-deps || true"
+    "lint": "eslint"
   },
   "dependencies": {
     "@paystack/inline-js": "^2.22.7",
