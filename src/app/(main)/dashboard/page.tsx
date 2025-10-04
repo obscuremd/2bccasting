@@ -87,16 +87,18 @@ export default function Page() {
         <EditProfile user={data} setUser={setData} />
       </Sheet>
 
-      <div className="w-full flex items-center gap-8">
+      <div className="w-full flex flex-col md:flex-row items-center gap-8">
         <CustomCard image={data?.profile_picture} profile={true} />
 
-        <div className="w-[40%] flex flex-col gap-8">
-          {/* profile infor */}
+        <div className="md:w-[40%] flex flex-col gap-8">
+          {/* profile info */}
 
-          <div>
+          <div className="flex flex-col gap-2">
             {/* profile & buttons */}
-            <div className="flex w-full gap-4 items-center">
-              <p className="text-h3 font-semibold">{data?.fullname}</p>
+            <div className="flex flex-col md:flex-row w-full gap-4 items-start md:items-center">
+              <p className="text-h3 font-semibold capitalize">
+                {data?.fullname}
+              </p>
               <div className="flex gap-2">
                 <Button variant={"secondary"} onClick={() => setIsOpen(true)}>
                   Edit Profile
@@ -108,24 +110,32 @@ export default function Page() {
                 )}
               </div>
             </div>
-            <p>{data?.category}</p>
+            <p className="capitalize text-title1 font-semibold">
+              {data?.category === "scout" ? data.role : data?.category}
+            </p>
             <p>{data?.bio}</p>
           </div>
           <div className="flex flex-col gap-2">
             <div className="flex gap-8">
               <div className=" flex gap-2 items-center">
-                <p className="text-title1 font-bold">
+                <p className="text-title2 md:text-title1 font-bold">
                   {data?.portfolio_pictures.length}
                 </p>
-                <p className="text-title2 font-medium">Portfolio Pictures</p>
+                <p className="text-body md:text-title2 font-medium text-nowrap">
+                  Portfolio Pictures
+                </p>
               </div>
               <div className=" flex gap-2 items-center">
-                <p className="text-title1 font-bold">14</p>
-                <p className="text-title2 font-medium">Page Insights</p>
+                <p className="text-title2 md:text-title1 font-bold">14</p>
+                <p className="text-body md:text-title2 font-medium text-nowrap">
+                  Page Insights
+                </p>
               </div>
               <div className=" flex gap-2 items-center">
-                <p className="text-title1 font-bold">14</p>
-                <p className="text-title2 font-medium">Saves</p>
+                <p className="text-title2 md:text-title1 font-bold">14</p>
+                <p className="text-body md:text-title2 font-medium text-nowrap">
+                  Saves
+                </p>
               </div>
             </div>
             {data?.vip ? (
@@ -156,12 +166,12 @@ export default function Page() {
       </div>
 
       <div className="flex gap-2.5 items-center w-full">
-        <hr className="w-[244px] bg-foreground" />
+        <hr className="w-[100px] md:w-[244px] bg-foreground" />
         <p className="text-h3 font-semibold">Portfolio </p>
       </div>
 
       {/* Talent Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-5 xl:grid-cols-7 gap-12 [grid-template-rows:masonry]">
+      <div className="grid grid-cols-1 md:grid-cols-5 xl:grid-cols-7 gap-12 [grid-template-rows:masonry]">
         {images && images.length > 0 ? (
           images.map((pic, i) => <CustomCard key={i} image={pic} profile />)
         ) : (

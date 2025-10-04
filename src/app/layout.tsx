@@ -52,7 +52,7 @@ export default function RootLayout({
       <body className={`${baiJamjuree.className} antialiased relative`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
@@ -69,10 +69,7 @@ export default function RootLayout({
               disableRotation={false}
             />
           </div>
-          <div className="fixed top-4 right-4 z-20">
-            <ThemeSwitch />
-          </div>
-          <div className="z-10 p-16 pt-8">{children}</div>
+          <div className="z-10 md:p-16 md:pt-0 p-2 pt-4">{children}</div>
         </ThemeProvider>
       </body>
     </html>

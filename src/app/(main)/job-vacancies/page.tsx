@@ -21,7 +21,7 @@ const jobs = [
 
 export default function Page() {
   return (
-    <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-6">
+    <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
       {jobs.map((job, i) => (
         <Card key={i} className="hover:shadow-lg transition-shadow">
           <CardHeader>

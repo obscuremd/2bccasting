@@ -85,7 +85,7 @@ export default function Page() {
         )}
       </Button>
 
-      <div className="grid grid-cols-5 gap-y-4 gap-x-10">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-y-4 gap-x-10">
         <ImageUploadUi file={image1} setFile={setImage1} />
         <ImageUploadUi file={image2} setFile={setImage2} />
         <ImageUploadUi file={image3} setFile={setImage3} />

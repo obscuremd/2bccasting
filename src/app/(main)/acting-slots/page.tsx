@@ -14,7 +14,7 @@ export default function Page() {
   const amount = (value[0] / 100) * 4500000;
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center px-6">
+    <div className="min-h-screen bg-background text-foreground flex flex-col items-center">
       {/* Title */}
       <h1 className="text-3xl font-bold mb-2 text-center">Acting Slots</h1>
       <div className="w-24 border-b-2 border-gray-500 mb-6"></div>

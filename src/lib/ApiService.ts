@@ -143,10 +143,6 @@ export async function GetProfiles(): Promise<{
 }> {
   try {
     const response = await axios.get("/api/user?portfolio=random");
-    // ✅ store token if returned
-    if (response.data.token) {
-      localStorage.setItem("auth_token", response.data.token);
-    }
     return {
       message: response.data.message,
       status: "success",

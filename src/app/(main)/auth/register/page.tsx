@@ -106,9 +106,9 @@ export default function Page() {
       <img
         src="/splash.png"
         alt="Splash"
-        className="h-[70vh] w-2/3 object-cover"
+        className="hidden md:block h-[70vh] md:w-2/3 object-cover"
       />
-      <div className="p-8 flex flex-col gap-5 items-center justify-center">
+      <div className="md:p-8 flex flex-col gap-5 items-center justify-center">
         <Tabs
           defaultValue="talent"
           className=" flex flex-col gap-2 justify-center items-center"
@@ -201,7 +201,7 @@ function Content({
   ];
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 flex-col md:flex-row">
       {category === "scout" && (
         <ImageUploadUi
           file={data.profile_picture}

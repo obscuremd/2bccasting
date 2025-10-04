@@ -1,17 +1,14 @@
 "use client";
 import Header from "@/components/local/header";
-import CircularGallery from "@/components/local/circular-gallery";
 import { Button } from "@/components/ui/button";
 import { Button as MButton } from "@/components/ui/moving-border";
-import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
-import { faker } from "@faker-js/faker";
 import { useEffect, useState } from "react";
 import { GetProfiles } from "@/lib/ApiService";
 import toast from "react-hot-toast";
+import RollingGallery from "@/components/RollingGallery";
 
 export default function Home() {
-  const [data, setData] = useState<HomeUsers[]>([]);
+  const [data, setData] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -20,8 +17,14 @@ export default function Home() {
       try {
         const response = await GetProfiles();
         if (response.status === "success") {
-          setData(response.data);
-          console.log(response.data);
+          // extract only pictures into images
+          const pics = response.data
+            .map((user: HomeUsers) => user.picture)
+            .filter((pic: string | undefined) => !!pic) // remove null/undefined
+            .slice(0, 10); // only keep first 10
+
+          setData(pics);
+          console.log("Pictures:", pics);
         } else {
           toast.error(response.message);
         }
@@ -38,9 +41,9 @@ export default function Home() {
   }
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center gap-[200px]">
+    <div className="w-full min-h-screen flex flex-col items-center md:gap-[200px] gap-[100px]">
       <Header />
-      <div className="flex flex-col items-center gap-2.5 justify-center">
+      <div className="flex flex-col w-full items-center gap-2.5 justify-center">
         <MButton
           borderRadius="1.75rem"
           className="bg-background text-black dark:text-white border-neutral-200 dark:border-slate-800 "
@@ -58,25 +61,14 @@ export default function Home() {
           <Button variant={"secondary"}>✨Become a Talent</Button>
           <Button>Find New Talent</Button>
         </div>
+        <RollingGallery autoplay images={data} />
       </div>
-      <div className="w-full h-[600px] relative">
-        <CircularGallery
-          bend={3}
-          textColor="#ffffff"
-          borderRadius={0.05}
-          scrollEase={0.02}
-          items={(Array.isArray(data) ? data : []).map((user) => ({
-            image: user.picture || "https://picsum.photos/800/600",
-            text: user.fullname,
-          }))}
-        />
-      </div>
-      <div className="flex flex-col gap-2.5 justify-center">
+      <div id="about" className="flex flex-col gap-2.5 justify-center">
         <div className="flex gap-2.5 items-center">
-          <hr className="w-[244px] bg-foreground" />
-          <p className="text-h3 font-semibold">About Us </p>
+          <hr className="md:w-[244px] w-[50px] bg-foreground" />
+          <p className="md:text-h3 text-h5 font-semibold">About Us </p>
         </div>
-        <p className="w-[75%] text-h5 font-medium">
+        <p className="md:w-[75%] md:text-h5 text-title2 font-medium">
           At BC Casting, we believe every dream deserves a spotlight. We’re a
           dynamic recruiting agency connecting talented individuals with the
           right opportunities in film, fashion, media, and entertainment. From
@@ -94,30 +86,31 @@ export default function Home() {
       </div>
       <div className="flex flex-col gap-2.5 justify-center">
         <div className="flex gap-2.5 items-center">
-          <hr className="w-[244px] bg-foreground" />
-          <p className="text-h3 font-semibold">Acting Slots</p>
+          <hr className="md:w-[244px] w-[50px] bg-foreground" />
+          <p className="md:text-h3 text-h5 font-semibold">Acting Slots</p>
         </div>
-        <p className="w-[75%] text-h5 font-medium">
+        <p className="md:w-[75%] md:text-h5 text-title2 font-medium">
           We are one of Nigeria’s leading casting agencies, with experience
           providing production with the artists they need. From extras to
           leading characters. If you are looking for exposure and recognition,
           you have come to the right place.
         </p>
+
         <Button size={"lg"} className="w-fit">
           Check out our Ratest
         </Button>
       </div>
-      <div className="flex flex-col gap-2.5 items-center justify-center border-[1px] border-accent h-[500px]">
-        <p className="text-h3 font-semibold">Contact Us</p>
-        <p className="w-[75%] text-h5 font-medium text-center">
+      <div className="flex flex-col gap-6 items-center justify-center border border-accent md:min-h-[500px] md:py-20 py-5 px-4 text-center">
+        <p className="md:text-h3 text-h5 font-semibold">Contact Us</p>
+        <p className="max-w-2xl  md:text-h5 text-title2 font-medium">
           Got questions or ready to connect? We’d love to hear from you! Reach
-          out to BC Casting at booking@bccasting.com and let’s bring talent and
-          opportunity together.
+          out to BC Casting at{" "}
+          <span className="font-semibold">booking@bccasting.com</span> and let’s
+          bring talent and opportunity together.
         </p>
-        <div className="flex gap-1">
-          <Input />
-          <Button className="w-fit">Send Mail</Button>
-        </div>
+        <a href="mailto:booking@bccasting.com" className="w-full">
+          <Button className="w-full">Send Mail</Button>
+        </a>
       </div>
     </div>
   );

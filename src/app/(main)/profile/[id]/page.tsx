@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Download, Heart, Phone } from "lucide-react";
 import { useParams } from "next/navigation";
 
-// Next.js Page Component with dynamic params
 export default function Page() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -38,34 +37,31 @@ export default function Page() {
   return (
     <div className="w-full min-h-screen flex flex-col items-center gap-[10px]">
       {/* Hero Section */}
-      <div className="w-full flex items-center gap-8">
+      <div className="w-full flex flex-col md:flex-row items-center gap-8">
         <CustomCard
           image={user.profile_picture || "/placeholder.jpg"}
           profile={true}
         />
 
-        <div className="w-[40%] flex flex-col gap-8">
+        <div className="md:w-[40%] flex flex-col gap-8">
           {/* Profile Info */}
-          <div>
-            {/* Name & Buttons */}
-            <div className="flex w-full justify-between">
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-col md:flex-row w-full gap-4 items-start md:items-center">
               <p className="text-h3 font-semibold">{user.fullname}</p>
               <div className="flex gap-2">
                 <Button variant={"secondary"}>
-                  <Heart />
-                  Save Profile
+                  <Heart /> Save Profile
                 </Button>
                 <Button>
-                  <Phone />
-                  Contact
+                  <Phone /> Contact
                 </Button>
               </div>
             </div>
-            <p className="capitalize">{user.role}</p>
+            <p className="capitalize text-title1 font-semibold">{user.role}</p>
             <p>{user.bio || "No bio provided."}</p>
           </div>
 
-          <div className="grid grid-cols-2 gap-y-8 gap-x-2">
+          <div className="grid grid-cols-2 gap-y-4 gap-x-2">
             <p>
               Age:{" "}
               {user.date_of_birth
@@ -75,10 +71,8 @@ export default function Page() {
               Years Old
             </p>
             <p>Gender: {user.gender || "N/A"}</p>
-            <p>Ethnicity: {user.location || "N/A"}</p>
-            <p>Country: {user.location?.split(",")[1] || "N/A"}</p>
-            <p>State: {user.location?.split(",")[0] || "N/A"}</p>
-            <p>Experience: {user.gender || "N/A"}</p>
+            <p>Country: {user.location || "N/A"}</p>
+            <p>State: {user.location || "N/A"}</p>
           </div>
 
           <Button>
@@ -89,11 +83,11 @@ export default function Page() {
 
       {/* Portfolio Section */}
       <div className="flex gap-2.5 items-center w-full">
-        <hr className="w-[244px] bg-foreground" />
+        <hr className="w-[100px] md:w-[244px] bg-foreground" />
         <p className="text-h3 font-semibold">Portfolio </p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 xl:grid-cols-7 gap-12 [grid-template-rows:masonry]">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-12 [grid-template-rows:masonry]">
         {user?.portfolio_pictures?.length > 0 ? (
           user.portfolio_pictures.map((pic: string, i: number) => (
             <CustomCard
@@ -102,6 +96,7 @@ export default function Page() {
               secondary_text={user.role}
               category={user.category}
               image={pic}
+              profile
             />
           ))
         ) : (

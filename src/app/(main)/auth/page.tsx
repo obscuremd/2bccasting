@@ -63,7 +63,7 @@ export default function Page() {
   }
 
   return (
-    <div className="flex gap-2.5">
+    <div className="flex md:flex-row flex-col md:gap-2.5">
       {/* Success Dialog */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="flex flex-col gap-10">
@@ -100,12 +100,13 @@ export default function Page() {
       </Dialog>
 
       {/* Splash + Form */}
+
       <img
         src="/splash.png"
         alt="Splash"
-        className="h-[70vh] w-2/3 object-cover"
+        className="hidden md:block h-[70vh] md:w-2/3 object-cover"
       />
-      <div className="p-8 flex flex-col gap-5 items-center justify-center">
+      <div className="md:p-8 flex flex-col gap-5 items-center justify-center">
         <div className="flex flex-col gap-2">
           <p className="text-h3 font-semibold text-center">
             Unlock opportunities. Join the stage.
@@ -137,11 +138,24 @@ export default function Page() {
           )}
         </Button>
         <div className="flex gap-5 items-center">
-          <p className="text-title2 font-semibold">General Policy</p>
+          <a
+            href="/PrivacyPolicy.pdf"
+            download
+            className="text-title2 font-semibold hover:underline cursor-pointer"
+          >
+            General Policy
+          </a>
           <hr className="h-[20px] bg-muted-foreground w-0.5" />
-          <p className="text-title2 font-semibold">Terms and Conditions</p>
+          <a
+            href="/TermsAndConditions.pdf"
+            download
+            className="text-title2 font-semibold hover:underline cursor-pointer"
+          >
+            Terms and Conditions
+          </a>
         </div>
-        <p className="text-title2 font-medium text-muted-foreground">
+
+        <p className="text-title2 font-medium text-muted-foreground text-center">
           By signing in you’re agreeing to our Terms and conditions and policies
         </p>
       </div>

@@ -62,7 +62,7 @@ export default function Header() {
 
   return (
     <header className="w-full border-b border-border bg-background">
-      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-3">
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 md:py-8 ">
         {/* Logo */}
         <Link href="/" className="text-xl font-bold">
           BC Casting
@@ -82,7 +82,7 @@ export default function Header() {
           <Link href="/job-vacancies">
             <Button variant="ghost">Job Vacancies</Button>
           </Link>
-          <Link href="/about">
+          <Link href="/#about">
             <Button variant="ghost">About Us</Button>
           </Link>
         </nav>
@@ -122,7 +122,7 @@ export default function Header() {
               Job Vacancies
             </Button>
           </Link>
-          <Link href="/about" onClick={() => setIsOpen(false)}>
+          <Link href="/#about" onClick={() => setIsOpen(false)}>
             <Button variant="ghost" className="w-full justify-start">
               About Us
             </Button>

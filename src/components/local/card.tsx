@@ -37,7 +37,7 @@ export default function CustomCard({
         src={image}
         alt={primary_text}
         className={`object-cover rounded-2xl ${
-          profile ? "w-[400px]" : "w-[100px] md:w-[200px]"
+          profile ? "w-full md:w-[400px]" : "w-full md:w-[200px]"
         }`}
         initial={{ height: profile ? 500 : randomHeight - 40 }}
         animate={{ height: profile ? 500 : randomHeight }}

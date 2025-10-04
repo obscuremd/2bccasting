@@ -27,6 +27,8 @@ export default function AuthLayout({
     CheckRegistrationStatus();
   }, []);
   return (
-    <main className="flex flex-col min-h-screen gap-[100px]">{children}</main>
+    <main className="flex flex-col min-h-screen gap-[100px] w-full">
+      {children}
+    </main>
   );
 }
