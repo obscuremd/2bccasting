@@ -3,16 +3,30 @@ import Header from "@/components/local/header";
 import { Button } from "@/components/ui/button";
 import { Button as MButton } from "@/components/ui/moving-border";
 import { useEffect, useState } from "react";
-import { GetProfiles } from "@/lib/ApiService";
+import { getCurrentUser, GetProfiles } from "@/lib/ApiService";
 import toast from "react-hot-toast";
 import RollingGallery from "@/components/RollingGallery";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+
   const [data, setData] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     async function getUser() {
+      setLoading(true);
+      try {
+        const response = await getCurrentUser();
+        setUser(response.user);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    async function getFeed() {
       setLoading(true);
       try {
         const response = await GetProfiles();
@@ -32,8 +46,9 @@ export default function Home() {
         setLoading(false);
       }
     }
-
     getUser();
+
+    getFeed();
   }, []);
 
   if (loading) {
@@ -58,8 +73,21 @@ export default function Home() {
           talent and opportunity come together to create magic. 🎬
         </p>
         <div className="flex gap-3">
-          <Button variant={"secondary"}>✨Become a Talent</Button>
-          <Button>Find New Talent</Button>
+          {user === null ? (
+            <Button variant={"secondary"} onClick={() => router.push("/auth")}>
+              ✨Become a Talent
+            </Button>
+          ) : (
+            <Button
+              variant={"secondary"}
+              onClick={() => router.push("/dashboard")}
+            >
+              Go to Dashboard
+            </Button>
+          )}
+          <Button onClick={() => router.push("/find-talent")}>
+            Find New Talent
+          </Button>
         </div>
         <RollingGallery autoplay images={data} />
       </div>
