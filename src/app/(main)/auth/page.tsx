@@ -17,8 +17,8 @@ import {
 import { Auth, OtpVerify } from "@/lib/ApiService";
 import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import toast from "react-hot-toast";
+import { useState } from "react";
 
 export default function Page() {
   const router = useRouter();
@@ -137,28 +137,57 @@ export default function Page() {
             "Continue"
           )}
         </Button>
-        <div className="flex gap-5 items-center">
-          <a
-            href="/PrivacyPolicy.pdf"
-            download
-            className="text-title2 font-semibold hover:underline cursor-pointer"
-          >
-            General Policy
-          </a>
-          <hr className="h-[20px] bg-muted-foreground w-0.5" />
-          <a
-            href="/TermsAndConditions.pdf"
-            download
-            className="text-title2 font-semibold hover:underline cursor-pointer"
-          >
-            Terms and Conditions
-          </a>
-        </div>
-
+        <PolicyLinks />
         <p className="text-title2 font-medium text-muted-foreground text-center">
           By signing in you’re agreeing to our Terms and conditions and policies
         </p>
       </div>
+    </div>
+  );
+}
+
+function PolicyLinks() {
+  const [open, setOpen] = useState(false);
+  const [doc, setDoc] = useState<"privacy" | "terms" | null>(null);
+
+  const openDoc = (type: "privacy" | "terms") => {
+    setDoc(type);
+    setOpen(true);
+  };
+
+  return (
+    <div className="flex gap-5 items-center">
+      <button
+        onClick={() => openDoc("privacy")}
+        className="text-title2 font-semibold hover:underline cursor-pointer"
+      >
+        General Policy
+      </button>
+      <hr className="h-[20px] bg-muted-foreground w-0.5" />
+      <button
+        onClick={() => openDoc("terms")}
+        className="text-title2 font-semibold hover:underline cursor-pointer"
+      >
+        Terms and Conditions
+      </button>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-3xl h-[80vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle>
+              {doc === "privacy" ? "General Policy" : "Terms and Conditions"}
+            </DialogTitle>
+          </DialogHeader>
+          <iframe
+            src={
+              doc === "privacy"
+                ? "/PrivacyPolicy.pdf"
+                : "/TermsAndConditions.pdf"
+            }
+            className="flex-1 w-full rounded-md"
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
