@@ -6,6 +6,7 @@ import { Bai_Jamjuree, Montserrat } from "next/font/google";
 import Particles from "@/components/local/Particles";
 import { Toaster } from "react-hot-toast";
 import { app } from "@/lib/firebaseConfig";
+import { Footer } from "@/components/local/footer";
 app;
 // Load Bai Jamjuree font
 const baiJamjuree = Bai_Jamjuree({
@@ -70,6 +71,7 @@ export default function RootLayout({
             />
           </div>
           <div className="z-10 md:p-16 md:pt-0 p-2 pt-4">{children}</div>
+          <Footer />
         </ThemeProvider>
       </body>
     </html>

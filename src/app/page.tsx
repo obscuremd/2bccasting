@@ -56,7 +56,7 @@ export default function Home() {
   }
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center md:gap-[200px] gap-[100px]">
+    <div className="w-full min-h-screen flex flex-col items-center md:gap-[100px] gap-[50px]">
       <Header />
       <div className="flex flex-col w-full items-center gap-2.5 justify-center">
         <MButton
@@ -65,6 +65,7 @@ export default function Home() {
         >
           ✨ Become a Star
         </MButton>
+        <img src={"/Logo.svg"} className="w-52" />
         <p className="md:text-h3 text-h5 font-semibold text-center">
           Where Talent Meets Opportunity.
         </p>
@@ -106,10 +107,21 @@ export default function Home() {
           talent ready to shine, BC Casting is the bridge that makes it happen.
         </p>
         <div className="flex gap-3">
-          <Button size={"lg"} variant={"secondary"}>
-            ✨Become a Talent
+          {user === null ? (
+            <Button variant={"secondary"} onClick={() => router.push("/auth")}>
+              ✨Become a Talent
+            </Button>
+          ) : (
+            <Button
+              variant={"secondary"}
+              onClick={() => router.push("/dashboard")}
+            >
+              Go to Dashboard
+            </Button>
+          )}
+          <Button onClick={() => router.push("/find-talent")}>
+            Find New Talent
           </Button>
-          <Button size={"lg"}>Find New Talent</Button>
         </div>
       </div>
       <div className="flex flex-col gap-2.5 justify-center">

@@ -65,7 +65,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto flex justify-between items-center px-4 md:py-8 ">
         {/* Logo */}
         <Link href="/" className="text-xl font-bold">
-          BC Casting
+          BC Castings
         </Link>
 
         {/* Desktop Nav */}
