@@ -61,7 +61,7 @@ export default function Home() {
       <div className="flex flex-col w-full items-center gap-2.5 justify-center">
         <MButton
           borderRadius="1.75rem"
-          className="bg-background text-black dark:text-white border-neutral-200 dark:border-slate-800 "
+          className="bg-background text-[#ffe299] border-neutral-200 dark:border-[#ffe2994e] "
         >
           ✨ Become a Star
         </MButton>
@@ -70,8 +70,8 @@ export default function Home() {
           Where Talent Meets Opportunity.
         </p>
         <p className="md:text-h5 text-title2 font-medium md:w-[70%] text-center text-secondary-foreground">
-          ✨ From actors to directors, dancers to models—BC Casting is where
-          talent and opportunity come together to create magic. 🎬
+          ✨ From Actors to Directors, Models to Hostesses BC Castings database
+          contain Talents for your projects.Register and Collaborate with us.
         </p>
         <div className="flex gap-3">
           {user === null ? (
@@ -98,13 +98,13 @@ export default function Home() {
           <p className="md:text-h3 text-h5 font-semibold">About Us </p>
         </div>
         <p className="md:w-[75%] md:text-h5 text-title2 font-medium">
-          At BC Casting, we believe every dream deserves a spotlight. We’re a
+          At BC Castings, we believe every dream deserves a spotlight. We’re a
           dynamic recruiting agency connecting talented individuals with the
           right opportunities in film, fashion, media, and entertainment. From
           actors, models, and dancers to directors, producers, and
           scriptwriters, we bring together the people who make creativity come
           alive. Whether you’re a recruiter searching for the perfect fit or a
-          talent ready to shine, BC Casting is the bridge that makes it happen.
+          talent ready to shine, BC Castings is the bridge that makes it happen.
         </p>
         <div className="flex gap-3">
           {user === null ? (
@@ -130,14 +130,21 @@ export default function Home() {
           <p className="md:text-h3 text-h5 font-semibold">Acting Slots</p>
         </div>
         <p className="md:w-[75%] md:text-h5 text-title2 font-medium">
-          We are one of Nigeria’s leading casting agencies, with experience
-          providing production with the artists they need. From extras to
-          leading characters. If you are looking for exposure and recognition,
-          you have come to the right place.
+          We are Nigerian&apos;s Leading Casting agencies based in Lagos and
+          Accra with experience in Movies Production, Home Video, Skit and
+          Musical Video shoot.If you are looking for exposure and recognition in
+          Nollywood, start by featuring in upcoming Movies. Get a Movie Role or
+          Skit Role and Secure your spot by getting our Movie Roles Membership
+          Subscription or Movie Roles Slots and start featuring in Upcoming
+          Movies.
         </p>
 
-        <Button size={"lg"} className="w-fit">
-          Check out our Ratest
+        <Button
+          size={"lg"}
+          className="w-fit"
+          onClick={() => router.push("/acting-slots")}
+        >
+          Get movie slot rows
         </Button>
       </div>
       <div className="flex flex-col gap-6 items-center justify-center border border-accent md:min-h-[500px] md:py-20 py-5 px-4 text-center">
@@ -145,7 +152,7 @@ export default function Home() {
         <p className="max-w-2xl  md:text-h5 text-title2 font-medium">
           Got questions or ready to connect? We’d love to hear from you! Reach
           out to BC Casting at{" "}
-          <span className="font-semibold">booking@bccasting.com</span> and let’s
+          <span className="font-semibold">support@bccasting.com</span> and let’s
           bring talent and opportunity together.
         </p>
         <a href="mailto:booking@bccasting.com" className="w-full">

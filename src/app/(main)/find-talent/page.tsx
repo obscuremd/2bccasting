@@ -139,23 +139,22 @@ export default function Page() {
                 </DialogDescription>
               </DialogHeader>
 
-              {/* Age filter */}
+              {/* Role filter */}
               <div className="flex flex-col gap-2">
-                <p className="font-medium">Age Range</p>
-                <Slider
-                  min={0}
-                  max={80}
-                  step={1}
-                  value={ageRange}
-                  onValueChange={(v) =>
-                    setAgeRange([v[0], v[1]] as [number, number])
-                  }
-                />
-                <p>
-                  {ageRange[0]} - {ageRange[1]} years
-                </p>
+                <p className="font-medium">Role</p>
+                <Select onValueChange={(val) => setRole(val)} value={role}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {roles.map((role, index) => (
+                      <SelectItem key={index} value={role.toLowerCase()}>
+                        {role}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-
               {/* Sex filter */}
               <div className="flex flex-col gap-2">
                 <p className="font-medium">Sex</p>
@@ -180,21 +179,21 @@ export default function Page() {
                 />
               </div>
 
-              {/* Role filter */}
+              {/* Age filter */}
               <div className="flex flex-col gap-2">
-                <p className="font-medium">Role</p>
-                <Select onValueChange={(val) => setRole(val)} value={role}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {roles.map((role, index) => (
-                      <SelectItem key={index} value={role.toLowerCase()}>
-                        {role}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <p className="font-medium">Age Range</p>
+                <Slider
+                  min={0}
+                  max={80}
+                  step={1}
+                  value={ageRange}
+                  onValueChange={(v) =>
+                    setAgeRange([v[0], v[1]] as [number, number])
+                  }
+                />
+                <p>
+                  {ageRange[0]} - {ageRange[1]} years
+                </p>
               </div>
             </DialogContent>
           </Dialog>
