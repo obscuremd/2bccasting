@@ -29,6 +29,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, Phone } from "lucide-react";
+import { Whatsapp } from "iconoir-react";
 
 type FormFields = {
   name: string;
@@ -210,9 +211,12 @@ export default function Page() {
               </div>
 
               {/* CONTACT */}
-              <div className="border-t pt-4 mt-4">
+              <div className="border-t pt-4 mt-4 space-y-2">
+                <CardTitle>Send Proof Of Payment </CardTitle>
+
                 <div className="flex items-center gap-2 text-sm">
                   <Mail size={16} />
+                  Email:
                   <a
                     href="mailto:Support@bccastings.com"
                     className="underline break-all"
@@ -222,6 +226,7 @@ export default function Page() {
                 </div>
                 <div className="flex items-center gap-2 text-sm mt-2">
                   <Phone size={16} />
+                  Call /Whatsapp:
                   <a href="tel:+2347047777561" className="underline">
                     +234 704 777 7561
                   </a>

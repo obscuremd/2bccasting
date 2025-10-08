@@ -3,6 +3,7 @@ import mongoose, { Document } from "mongoose";
 interface IUserDoc extends Document {
   email: string;
   password: string;
+  phone_number: string;
   profile_picture?: string;
   fullname: string;
   bio: string;
@@ -15,11 +16,15 @@ interface IUserDoc extends Document {
   portfolio_pictures?: string[];
   cv?: string;
   vip?: boolean;
+  vip_start_date?: Date;
+  vip_end_date?: Date;
+  profile_visibility: boolean;
 }
 
 const UserSchema = new mongoose.Schema<IUserDoc>(
   {
     email: { type: String, required: true },
+    phone_number: { type: String, required: true },
     password: { type: String, required: true },
     profile_picture: { type: String },
     fullname: { type: String, required: true },
@@ -35,6 +40,9 @@ const UserSchema = new mongoose.Schema<IUserDoc>(
     portfolio_pictures: { type: [String], default: [] },
     cv: { type: String, default: "" },
     vip: { type: Boolean, default: false },
+    vip_start_date: { type: Date, default: null },
+    vip_end_date: { type: Date, default: null },
+    profile_visibility: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

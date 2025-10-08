@@ -14,6 +14,7 @@ interface OtpData {
 interface User {
   _id: string; // comes from MongoDB
   email: string;
+  phone_number: string;
   password: string;
   profile_picture?: string; // optional since not required
   fullname: string;
@@ -30,6 +31,10 @@ interface User {
   portfolio_pictures: string[];
   cv?: string;
   vip?: boolean;
+
+  vip_start_date?: Date;
+  vip_end_date?: Date;
+  profile_visibility: boolean;
 
   // Mongoose timestamps
   createdAt?: Date;

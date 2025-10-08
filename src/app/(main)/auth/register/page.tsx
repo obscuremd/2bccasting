@@ -21,25 +21,12 @@ import { DatePicker } from "@/components/local/datePicker";
 import { Textarea } from "@/components/ui/textarea";
 import ImageUploadUi from "@/components/local/ImageUpload";
 import { uploadImages } from "@/lib/UtilServices";
-
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import LocationSelect from "@/components/local/countryselect";
 
 interface RegisterUser {
   email: string;
+  phone_number: string;
   password: string;
   fullname: string;
   bio: string;
@@ -59,6 +46,7 @@ export default function Page() {
   const [category, setCategory] = useState<"talent" | "scout">("talent");
   const [data, setData] = useState<RegisterUser>({
     email: "",
+    phone_number: "",
     password: "",
     fullname: "",
     bio: "",
@@ -248,13 +236,25 @@ function Content({
             }
           />
         </div>
-        <Input
-          placeholder="Full Name"
-          className="w-full"
-          onChange={(e) =>
-            setData((prev) => ({ ...prev, fullname: e.target.value }))
-          }
-        />
+        <div className="flex gap-2">
+          <Input
+            placeholder="Full Name"
+            className="w-full"
+            onChange={(e) =>
+              setData((prev) => ({ ...prev, fullname: e.target.value }))
+            }
+          />
+          <Input
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            placeholder="Phone Number"
+            className="w-full"
+            onChange={(e) =>
+              setData((prev) => ({ ...prev, phone_number: e.target.value }))
+            }
+          />
+        </div>
         <div className="flex gap-2">
           <Select
             onValueChange={(value) => setData((p) => ({ ...p, gender: value }))}

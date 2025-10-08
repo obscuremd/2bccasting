@@ -35,7 +35,15 @@ import { getCurrentUser } from "@/lib/ApiService";
 import { uploadImages } from "@/lib/UtilServices";
 import { faker } from "@faker-js/faker";
 import axios from "axios";
-import { Download, Loader2Icon, Upload } from "lucide-react";
+import {
+  DoorOpen,
+  Download,
+  Eye,
+  EyeClosed,
+  Loader2Icon,
+  Trash,
+  Upload,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -45,6 +53,8 @@ export default function Page() {
   const [data, setData] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false); // dialog control
+
+  const [profileUpdateLoading, setProfileUpdateLoading] = useState(false);
 
   const [imageEditOpen, setImageEditOpen] = useState(false);
 
@@ -76,6 +86,33 @@ export default function Page() {
     router.push("/");
   }
 
+  async function setProfileVisibilty() {
+    setProfileUpdateLoading(true);
+    try {
+      if (!data) {
+        return;
+      }
+      const res = await axios.put("/api/user", {
+        id: data._id,
+        profile_visibility: !data?.profile_visibility,
+      });
+
+      if (res.status === 200) {
+        toast.success("Profile updated successfully");
+        console.log("response:", res);
+        const updatedUser = await getCurrentUser();
+        setData(updatedUser.user);
+      } else {
+        toast.error("Error updating profile");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Unknown error");
+    } finally {
+      setProfileUpdateLoading(false);
+    }
+  }
+
   const images =
     data?.category === "scout" ? data.saved_profiles : data?.portfolio_pictures;
 
@@ -89,7 +126,11 @@ export default function Page() {
 
       {/* dialog */}
       <Dialog open={imageEditOpen} onOpenChange={setImageEditOpen}>
-        <UploadImage data={data} />
+        <UploadImage
+          data={data}
+          setUser={setData}
+          setModal={setImageEditOpen}
+        />
       </Dialog>
 
       {/* Sheet */}
@@ -149,11 +190,31 @@ export default function Page() {
               </div>
             </div>
             {data?.vip ? (
-              ""
+              <p className="font-medium text-muted-foreground">
+                🎉 Welcome, <span className="font-semibold">VIP Member</span>!{" "}
+                {data.vip_start_date && data.vip_end_date ? (
+                  <>
+                    Your membership started on{" "}
+                    <span className="font-semibold text-foreground">
+                      {new Date(data.vip_start_date).toLocaleDateString()}
+                    </span>{" "}
+                    and will remain active until{" "}
+                    <span className="font-semibold text-foreground">
+                      {new Date(data.vip_end_date).toLocaleDateString()}
+                    </span>
+                    .
+                  </>
+                ) : (
+                  "We’re setting up your VIP details. You’ll see your membership dates here soon."
+                )}{" "}
+                As a VIP, you can now see who has viewed or saved your profile
+                and connect with them directly.
+              </p>
             ) : (
               <p className="font-medium text-muted-foreground">
-                Upgrade to VIP to see who has viewed or saved your profile, and
-                connect directly with them.
+                Upgrade to <span className="font-semibold">VIP</span> to unlock
+                exclusive benefits — see who’s viewed or saved your profile and
+                connect with them instantly.
               </p>
             )}
           </div>
@@ -178,15 +239,47 @@ export default function Page() {
                 ? data.location.split(", ")[1]
                 : data?.location}
             </p>
+            <p>Phone Number: {data?.phone_number}</p>
           </div>
+
           <div className="flex w-[50%] gap-2">
             {data?.category === "talent" && (
               <Button onClick={() => setImageEditOpen(true)} className="w-full">
                 <Upload /> Upload Picture
               </Button>
             )}
+
+            <Button
+              className="w-full flex items-center justify-center gap-2"
+              onClick={setProfileVisibilty}
+              variant={data?.profile_visibility ? "secondary" : "default"}
+              disabled={profileUpdateLoading}
+            >
+              {profileUpdateLoading ? (
+                <Loader2Icon className="animate-spin" />
+              ) : data?.profile_visibility ? (
+                <>
+                  <EyeClosed className="w-4 h-4" />
+                  <span>Make Profile Invisible</span>
+                </>
+              ) : (
+                <>
+                  <Eye className="w-4 h-4" />
+                  <span>Make Profile Visible</span>
+                </>
+              )}
+            </Button>
+          </div>
+          <div className="flex w-[50%] gap-2">
+            <Button
+              onClick={() => setImageEditOpen(true)}
+              variant={"secondary"}
+              className="w-full"
+            >
+              <DoorOpen /> Logout
+            </Button>
             <Button variant={"destructive"} onClick={Logout} className="w-full">
-              <Download /> Logoout
+              <Trash /> Delete Account
             </Button>
           </div>
         </div>
@@ -369,7 +462,15 @@ function EditProfile({
   );
 }
 
-function UploadImage({ data }: { data: User | null }) {
+function UploadImage({
+  data,
+  setUser,
+  setModal,
+}: {
+  data: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  setModal: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -386,12 +487,16 @@ function UploadImage({ data }: { data: User | null }) {
       if (response.message === "success") {
         const res = await axios.put("/api/user", {
           id: data?._id,
-          profile_picture: response.data[0],
           portfolio_pictures_add: response.data,
         });
 
         if (res.status === 200) {
           toast.success("Portfolio created successfully");
+          // 🔄 re-fetch updated user
+          const updatedUser = await getCurrentUser();
+          setFile(null);
+          setUser(updatedUser.user);
+          setModal(false);
         } else {
           toast.error("Error creating portfolio");
         }

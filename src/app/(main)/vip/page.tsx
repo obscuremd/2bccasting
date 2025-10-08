@@ -39,18 +39,28 @@ export default function Page() {
 
   const plans = [
     {
-      title: "Monthly",
-      amount: 2400 * 100, // kobo
-      price: "₦2,400/Month",
-      yearly: "₦24,000/Year",
-      discount: "20% off",
+      title: "Basic Plan",
+      amount: 10000 * 100, // kobo
+      price: "₦10,000 Only",
+      duration: 1,
     },
     {
-      title: "Yearly",
-      amount: 240000 * 100,
-      price: "₦20,000/Month",
-      yearly: "₦240,000/Year",
-      discount: "20% off",
+      title: "Bronze Plan",
+      amount: 24000 * 100, // kobo
+      price: "₦24,000 Only",
+      duration: 3,
+    },
+    {
+      title: "Silver Plan",
+      amount: 45000 * 100, // kobo
+      price: "₦45,000 Only",
+      duration: 5,
+    },
+    {
+      title: "Gold Plan",
+      amount: 100000 * 100, // kobo
+      price: "₦100,000 Only",
+      duration: 12,
     },
   ];
 
@@ -89,35 +99,39 @@ export default function Page() {
               active={plan === i}
               title={p.title}
               price={p.price}
-              yearly={p.yearly}
-              discount={p.discount}
+              duration={p.duration}
             />
           </button>
         ))}
       </div>
 
-      {/* Footer */}
-      <div className="flex gap-5 items-center">
-        <p className="text-h5 font-medium">Restore Purchases</p>
-        <hr className="h-[20px] bg-muted-foreground w-0.5" />
-        <p className="text-h5 font-medium">Terms and Conditions</p>
-      </div>
-      <p className="text-h5 font-medium">Privacy Policy</p>
-
       {/* Paystack Button */}
       {plan !== undefined && (
         <PaystackButton
-          publicKey={process.env.NEXT_PUBLIC_LIVE_PAYSTACK_KEY ?? ""}
+          publicKey={process.env.NEXT_PUBLIC_PAYSTACK_KEY ?? ""}
           amount={plans[plan].amount}
           email={userEmail}
           text="Continue"
-          onSuccess={(reference) => {
+          className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-title1 w-full font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+          onSuccess={async (reference) => {
             console.log("Payment complete! Reference:", reference);
-            axios.put("/api/user", {
-              id: user?._id,
-              vip: true,
-            });
-            toast.success("Payment Successful");
+
+            const startDate = new Date();
+            const endDate = new Date();
+            endDate.setMonth(endDate.getMonth() + plans[plan].duration);
+
+            try {
+              await axios.put("/api/user", {
+                id: user?._id,
+                vip: true,
+                vip_start_date: startDate,
+                vip_end_date: endDate,
+              });
+              toast.success("Payment Successful");
+              router.push("/dashboard");
+            } catch (err) {
+              toast.error("Error saving VIP status");
+            }
           }}
           onClose={() => console.log("Payment closed")}
         />
@@ -130,14 +144,12 @@ function PricingCard({
   active,
   title,
   price,
-  yearly,
-  discount,
+  duration,
 }: {
   active: boolean;
   title: string;
   price: string;
-  yearly: string;
-  discount?: string;
+  duration: number;
 }) {
   return (
     <motion.div
@@ -155,12 +167,8 @@ function PricingCard({
           {title}
         </p>
         <p className="text-h5 font-bold">{price}</p>
-        <p className="text-title1 font-medium">{yearly}</p>
+        <p className="text-title1 font-medium">{duration} Month(s)</p>
       </Card>
-
-      {discount && (
-        <Badge className="absolute -top-2 right-2">{discount}</Badge>
-      )}
     </motion.div>
   );
 }

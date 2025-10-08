@@ -52,6 +52,7 @@ export async function OtpVerify({
 
 export async function Register({
   email,
+  phone_number,
   password,
   fullname,
   bio,
@@ -63,6 +64,7 @@ export async function Register({
   role,
 }: {
   email: string;
+  phone_number: string;
   password: string;
   fullname: string;
   bio: string;
@@ -76,6 +78,7 @@ export async function Register({
   // ✅ Basic validation
   if (
     !email.trim() ||
+    !phone_number.trim() ||
     !password.trim() ||
     !fullname.trim() ||
     !bio.trim() ||
@@ -93,6 +96,7 @@ export async function Register({
   try {
     const response = await axios.post("/api/user?action=register", {
       email,
+      phone_number,
       password,
       fullname,
       bio,
