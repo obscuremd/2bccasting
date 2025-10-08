@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
 
 import { Input } from "@/components/ui/input";
 
@@ -22,6 +21,22 @@ import { DatePicker } from "@/components/local/datePicker";
 import { Textarea } from "@/components/ui/textarea";
 import ImageUploadUi from "@/components/local/ImageUpload";
 import { uploadImages } from "@/lib/UtilServices";
+
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import LocationSelect from "@/components/local/countryselect";
 
 interface RegisterUser {
   email: string;
@@ -254,6 +269,12 @@ function Content({
               </SelectGroup>
             </SelectContent>
           </Select>
+          <LocationSelect
+            value={data.location}
+            onChange={(value) => setData((p) => ({ ...p, location: value }))}
+          />
+        </div>
+        <div className="flex gap-2 w-full">
           {category === "talent" && (
             <Select
               onValueChange={(value) => setData((p) => ({ ...p, role: value }))}
@@ -273,32 +294,12 @@ function Content({
               </SelectContent>
             </Select>
           )}
-        </div>
-        <div className="flex gap-2">
           <DatePicker
             date={data.date_of_birth ? new Date(data.date_of_birth) : undefined}
             setDate={(e) =>
               setData((p) => ({ ...p, date_of_birth: e?.toString() ?? "" }))
             }
           />
-          <Select
-            onValueChange={(value) =>
-              setData((p) => ({ ...p, location: value }))
-            }
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="what's your location" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {countries.map((item, index) => (
-                  <SelectItem key={index} value={item.value}>
-                    {item.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
         </div>
         <Textarea
           className="h-full"

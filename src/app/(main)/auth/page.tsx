@@ -32,6 +32,11 @@ export default function Page() {
   async function Authenticate() {
     setLoading(true);
     try {
+      if (email === "" || password === "") {
+        toast.error("provide email or password");
+        return;
+      }
+
       const res = await Auth({ email, password });
       if (res.status === "error") {
         toast.error(res.message);
@@ -51,7 +56,7 @@ export default function Page() {
         toast.error(res.message);
         return;
       } else if (res.status === "pending") {
-        toast.loading(res.message);
+        toast.error(res.message);
         router.push("/auth/register");
       } else {
         toast("Otp Verified");
@@ -120,12 +125,14 @@ export default function Page() {
           placeholder="Email"
           className="w-full"
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
         <Input
           placeholder="Password"
           type="password"
           className="w-full"
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
         <Button onClick={Authenticate} className="w-full" disabled={loading}>
           {loading ? (

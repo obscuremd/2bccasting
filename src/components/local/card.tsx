@@ -19,9 +19,6 @@ export default function CustomCard({
 }: Props) {
   const [visible, setVisible] = useState(false);
 
-  // random height for masonry layout (non-profile only)
-  const randomHeight = Math.floor(Math.random() * 150) + 250;
-
   return (
     <div
       className="relative mb-6 break-inside-avoid rounded-2xl overflow-hidden cursor-pointer"
@@ -39,8 +36,6 @@ export default function CustomCard({
         className={`object-cover rounded-2xl ${
           profile ? "w-full md:w-[400px]" : "w-full md:w-[200px]"
         }`}
-        initial={{ height: profile ? 500 : randomHeight - 40 }}
-        animate={{ height: profile ? 500 : randomHeight }}
         transition={{ duration: 0.6, ease: "easeInOut" }}
       />
 

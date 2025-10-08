@@ -138,24 +138,33 @@ export default function Home() {
           Subscription or Movie Roles Slots and start featuring in Upcoming
           Movies.
         </p>
-
-        <Button
-          size={"lg"}
-          className="w-fit"
-          onClick={() => router.push("/acting-slots")}
-        >
-          Get movie slot rows
-        </Button>
+        <div className="flex gap-3">
+          <Button
+            size={"lg"}
+            className="w-fit"
+            onClick={() => router.push("/acting-slots")}
+          >
+            Get movie slot rows
+          </Button>
+          <Button
+            variant={"secondary"}
+            size={"lg"}
+            className="w-fit"
+            onClick={() => router.push("/acting-slots/membership-slots")}
+          >
+            Get membership slots
+          </Button>
+        </div>
       </div>
       <div className="flex flex-col gap-6 items-center justify-center border border-accent md:min-h-[500px] md:py-20 py-5 px-4 text-center">
         <p className="md:text-h3 text-h5 font-semibold">Contact Us</p>
         <p className="max-w-2xl  md:text-h5 text-title2 font-medium">
           Got questions or ready to connect? We’d love to hear from you! Reach
-          out to BC Casting at{" "}
-          <span className="font-semibold">support@bccasting.com</span> and let’s
-          bring talent and opportunity together.
+          out to BC Castings at{" "}
+          <span className="font-semibold">support@bccastings.com</span> and
+          let’s bring talent and opportunity together.
         </p>
-        <a href="mailto:booking@bccasting.com" className="w-full">
+        <a href="mailto:support@bccastings.com" className="w-full">
           <Button className="w-full">Send Mail</Button>
         </a>
       </div>

@@ -1,16 +1,6 @@
 "use client";
-import Link from "next/link";
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin,
-  Youtube,
-  Music2,
-} from "lucide-react";
+import { Mail, Phone, MapPin, Instagram, Youtube } from "lucide-react";
+import { Tiktok, Whatsapp } from "iconoir-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { useState } from "react";
 
@@ -58,37 +48,43 @@ export function Footer() {
           </div>
 
           {/* Social Media Links */}
-          <div>
-            <h3 className="font-semibold text-lg mb-4">Follow Us</h3>
-            <div className="flex gap-4">
-              <a
-                href="https://www.tiktok.com/@bira2186?_t=ZM-90Jom7zrZHP&_r=1"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center hover:bg-accent transition-colors"
-                aria-label="Facebook"
-              >
-                <Music2 className="h-5 w-5" />
-              </a>
-              <a
-                href="https://youtube.com/@agencybira86?si=xKktbOoa7UtHer9k"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center hover:bg-accent transition-colors"
-                aria-label="Twitter"
-              >
-                <Youtube className="h-5 w-5" />
-              </a>
-              <a
-                href="https://www.instagram.com/agencybira?igsh=Ym5laDlqa3l6MjZh"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center hover:bg-accent transition-colors"
-                aria-label="Instagram"
-              >
-                <Instagram className="h-5 w-5" />
-              </a>
-            </div>
+          <div className="flex gap-4">
+            <a
+              href="https://wa.me/2347047777561"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center hover:bg-accent transition-colors"
+              aria-label="WhatsApp"
+            >
+              <Whatsapp className="h-5 w-5" />
+            </a>
+            <a
+              href="https://www.tiktok.com/@bira2186?_t=ZM-90Jom7zrZHP&_r=1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center hover:bg-accent transition-colors"
+              aria-label="TikTok"
+            >
+              <Tiktok className="h-5 w-5" />
+            </a>
+            <a
+              href="https://youtube.com/@agencybira86?si=xKktbOoa7UtHer9k"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center hover:bg-accent transition-colors"
+              aria-label="YouTube"
+            >
+              <Youtube className="h-5 w-5" />
+            </a>
+            <a
+              href="https://www.instagram.com/agencybira?igsh=Ym5laDlqa3l6MjZh"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center hover:bg-accent transition-colors"
+              aria-label="Instagram"
+            >
+              <Instagram className="h-5 w-5" />
+            </a>
           </div>
         </div>
 

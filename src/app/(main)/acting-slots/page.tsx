@@ -100,7 +100,7 @@ export default function Page() {
   };
 
   return (
-    <div className="">
+    <div>
       <header className="mb-8">
         <h1 className="text-3xl font-extrabold">
           BC CASTINGS — Get Movie Role Slot
@@ -112,118 +112,127 @@ export default function Page() {
         </p>
       </header>
 
-      <main className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <main className="flex flex-col gap-6 ">
         {/* Pricing Card */}
-        <Card className="col-span-2">
-          <CardHeader>
-            <CardTitle>Pricing</CardTitle>
-            <CardDescription>
-              Choose one of the role slot packages below.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Number of Roles</TableHead>
-                  <TableHead>Pay in ₦</TableHead>
-                  <TableHead>Pay in GH₵</TableHead>
-                  <TableHead>Pay in USD</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {pricing.map((p) => (
-                  <TableRow key={p.roles}>
-                    <TableCell className="font-medium">{p.roles}</TableCell>
-                    <TableCell>{p.ngn}</TableCell>
-                    <TableCell>{p.gh}</TableCell>
-                    <TableCell>{p.usd}</TableCell>
+        <div className="flex flex-col md:flex-row gap-6">
+          <Card className="flex-1 md:basis-2/3">
+            <CardHeader>
+              <CardTitle>Pricing</CardTitle>
+              <CardDescription>
+                Choose one of the role slot packages below.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Number of Roles</TableHead>
+                    <TableHead>Pay in ₦</TableHead>
+                    <TableHead>Pay in GH₵</TableHead>
+                    <TableHead>Pay in USD</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {pricing.map((p) => (
+                    <TableRow key={p.roles}>
+                      <TableCell className="font-medium">{p.roles}</TableCell>
+                      <TableCell>{p.ngn}</TableCell>
+                      <TableCell>{p.gh}</TableCell>
+                      <TableCell>{p.usd}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
 
-            <div className="mt-6 space-y-4">
-              <p className="text-sm text-muted-foreground">
-                How to register (summary):
-              </p>
-              <ol className="list-decimal pl-5 text-sm text-muted-foreground space-y-2">
-                <li>Select a package and pay to the account number below.</li>
-                <li>
-                  Send evidence of payment (name of depositor, amount, date) to
-                  the WhatsApp number or email.
-                </li>
-                <li>
-                  After confirmation you will be added to the VIP WhatsApp group
-                  and receive a membership form and pass code.
-                </li>
-                <li>
-                  Use the pass code on-site to claim roles. Lost pass codes cost
-                  $10 to replace.
-                </li>
-              </ol>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Payment & Contact Card */}
-        <Card className="col-span-1">
-          <CardHeader>
-            <CardTitle>Payment Methods & Contact</CardTitle>
-            <CardDescription>
-              Account details to send payment and how to reach us.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4 text-muted-foreground">
-            <div>
-              <h3 className="text-sm font-semibold">Nigeria (Naira)</h3>
-              <p className="text-sm">Bank: UBA Nigeria</p>
-              <p className="text-sm">
-                Account Name: BIRA RECRUITING AGENCY LIMITED
-              </p>
-              <p className="text-sm">Account No: 1025207623</p>
-            </div>
-
-            <div>
-              <h3 className="text-sm font-semibold mt-3 text-nowrap">
-                USD (Nigeria)
-              </h3>
-              <p className="text-sm text-nowrap">Bank: Zenith Bank Nigeria</p>
-              <p className="text-sm text-nowrap">
-                Account Name: BUMSHALALA RECORDS
-              </p>
-              <p className="text-sm text-nowrap">Account No: 1017511611</p>
-              <p className="text-sm text-nowrap">Sort Code: 015151096</p>
-            </div>
-
-            <div>
-              <h3 className="text-sm font-semibold mt-3 text-nowrap">Ghana</h3>
-              <p className="text-sm text-nowrap">Bank: Access Bank</p>
-              <p className="text-sm text-nowrap">
-                Account Name: Bira Bumshalala Int&apos;l LTD
-              </p>
-              <p className="text-sm text-nowrap">Account No: 1036000004690</p>
-            </div>
-
-            <div className="border-t pt-4 mt-4">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground text-nowrap">
-                <Mail size={16} />
-                <a href="mailto:Support@bccastings.com" className="underline">
-                  Support@bccastings.com
-                </a>
+              <div className="mt-6 space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  How to register (summary):
+                </p>
+                <ol className="list-decimal pl-5 text-sm text-muted-foreground space-y-2">
+                  <li>Select a package and pay to the account number below.</li>
+                  <li>
+                    Send evidence of payment (name of depositor, amount, date)
+                    to the WhatsApp number or email.
+                  </li>
+                  <li>
+                    After confirmation you will be added to the VIP WhatsApp
+                    group and receive a membership form and pass code.
+                  </li>
+                  <li>
+                    Use the pass code on-site to claim roles. Lost pass codes
+                    cost $10 to replace.
+                  </li>
+                </ol>
               </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2 text-nowrap">
-                <Phone size={16} />
-                <a href="tel:+2347047777561" className="underline">
-                  +234 704 777 7561
-                </a>
+            </CardContent>
+          </Card>
+
+          {/* Payment & Contact Card */}
+          <Card className="flex-1 md:basis-1/3">
+            <CardHeader>
+              <CardTitle>Payment Methods & Contact</CardTitle>
+              <CardDescription>
+                Account details to send payment and how to reach us.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6 text-muted-foreground">
+              {/* NAIRA */}
+              <div>
+                <h3 className="text-sm font-semibold">Pay in Naira</h3>
+                <p className="text-sm">Bank: UBA Nigeria</p>
+                <p className="text-sm">Account No: 1025207623</p>
+                <p className="text-sm">
+                  Account Name: BIRA RECRUITING AGENCY LIMITED
+                </p>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+
+              {/* USD */}
+              <div>
+                <h3 className="text-sm font-semibold">Pay in USD</h3>
+                <p className="text-sm">Bank: Zenith Bank Nigeria</p>
+                <p className="text-sm">Account No: 1017511611</p>
+                <p className="text-sm">Account Name: BUMSHALALA RECORDS</p>
+                <p className="text-sm">Sort Code: 015151096</p>
+                <p className="text-sm">Swift Code: ZEIBNGLA</p>
+              </div>
+
+              {/* GHANA */}
+              <div>
+                <h3 className="text-sm font-semibold">Pay in GH₵</h3>
+                <p className="text-sm">Bank: Access Bank Ghana</p>
+                <p className="text-sm">Account No: 1036000004690</p>
+                <p className="text-sm">
+                  Account Name: Bira Bumshalala Int&apos;l LTD
+                </p>
+                <p className="text-sm">USD ⬇</p>
+                <p className="text-sm">Swift Code: ABNGGHAC</p>
+                <p className="text-sm">Sort Code: 280125</p>
+              </div>
+
+              {/* CONTACT */}
+              <div className="border-t pt-4 mt-4">
+                <div className="flex items-center gap-2 text-sm">
+                  <Mail size={16} />
+                  <a
+                    href="mailto:Support@bccastings.com"
+                    className="underline break-all"
+                  >
+                    Support@bccastings.com
+                  </a>
+                </div>
+                <div className="flex items-center gap-2 text-sm mt-2">
+                  <Phone size={16} />
+                  <a href="tel:+2347047777561" className="underline">
+                    +234 704 777 7561
+                  </a>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Registration Form Card */}
-        <div className="lg:col-span-3">
+        <div className="w-full">
           <Card>
             <CardHeader>
               <CardTitle>Register / Send Payment Proof</CardTitle>

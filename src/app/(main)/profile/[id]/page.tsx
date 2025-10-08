@@ -71,8 +71,18 @@ export default function Page() {
               Years Old
             </p>
             <p>Gender: {user.gender || "N/A"}</p>
-            <p>Country: {user.location || "N/A"}</p>
-            <p>State: {user.location || "N/A"}</p>
+            <p>
+              State:{" "}
+              {user?.location?.includes(",")
+                ? user.location.split(", ")[0]
+                : "—"}
+            </p>
+            <p>
+              Country:{" "}
+              {user?.location?.includes(",")
+                ? user.location.split(", ")[1]
+                : user?.location}
+            </p>
           </div>
 
           <Button>
@@ -87,7 +97,7 @@ export default function Page() {
         <p className="text-h3 font-semibold">Portfolio </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-12 [grid-template-rows:masonry]">
+      <div className="columns-1 sm:columns-2 lg:columns-5 gap-6">
         {user?.portfolio_pictures?.length > 0 ? (
           user.portfolio_pictures.map((pic: string, i: number) => (
             <CustomCard

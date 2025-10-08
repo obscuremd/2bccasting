@@ -1,5 +1,6 @@
 "use client";
 import CustomCard from "@/components/local/card";
+import LocationSelect from "@/components/local/countryselect";
 import { DatePicker } from "@/components/local/datePicker";
 import ImageUploadUi from "@/components/local/ImageUpload";
 import { Button } from "@/components/ui/button";
@@ -31,9 +32,10 @@ import {
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import { getCurrentUser } from "@/lib/ApiService";
+import { uploadImages } from "@/lib/UtilServices";
 import { faker } from "@faker-js/faker";
 import axios from "axios";
-import { Download, Loader2Icon } from "lucide-react";
+import { Download, Loader2Icon, Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -42,8 +44,9 @@ export default function Page() {
   const router = useRouter();
   const [data, setData] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
-  const [editLoading, setEditLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false); // dialog control
+
+  const [imageEditOpen, setImageEditOpen] = useState(false);
 
   const getAge = (dob: Date) => {
     const diff = Date.now() - dob.getTime();
@@ -83,6 +86,13 @@ export default function Page() {
   return (
     <div className="w-full min-h-screen flex flex-col items-center gap-[10px]">
       {/* Hero Section */}
+
+      {/* dialog */}
+      <Dialog open={imageEditOpen} onOpenChange={setImageEditOpen}>
+        <UploadImage data={data} />
+      </Dialog>
+
+      {/* Sheet */}
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <EditProfile user={data} setUser={setData} />
       </Sheet>
@@ -126,7 +136,7 @@ export default function Page() {
                 </p>
               </div>
               <div className=" flex gap-2 items-center">
-                <p className="text-title2 md:text-title1 font-bold">14</p>
+                <p className="text-title2 md:text-title1 font-bold">22</p>
                 <p className="text-body md:text-title2 font-medium text-nowrap">
                   Page Insights
                 </p>
@@ -156,12 +166,29 @@ export default function Page() {
               Years Old
             </p>
             <p>Gender: {data?.gender}</p>
-            <p>Country: {data?.location}</p>
-            <p>State: {data?.location}</p>
+            <p>
+              State:{" "}
+              {data?.location?.includes(",")
+                ? data.location.split(", ")[0]
+                : "—"}
+            </p>
+            <p>
+              Country:{" "}
+              {data?.location?.includes(",")
+                ? data.location.split(", ")[1]
+                : data?.location}
+            </p>
           </div>
-          <Button variant={"destructive"} onClick={Logout}>
-            <Download /> Logoout
-          </Button>
+          <div className="flex w-[50%] gap-2">
+            {data?.category === "talent" && (
+              <Button onClick={() => setImageEditOpen(true)} className="w-full">
+                <Upload /> Upload Picture
+              </Button>
+            )}
+            <Button variant={"destructive"} onClick={Logout} className="w-full">
+              <Download /> Logoout
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -171,7 +198,7 @@ export default function Page() {
       </div>
 
       {/* Talent Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-5 xl:grid-cols-7 gap-12 [grid-template-rows:masonry]">
+      <div className="columns-1 sm:columns-2 lg:columns-5 gap-6">
         {images && images.length > 0 ? (
           images.map((pic, i) => <CustomCard key={i} image={pic} profile />)
         ) : (
@@ -190,10 +217,6 @@ function EditProfile({
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }) {
   const [loading, setLoading] = useState(false);
-
-  const [countries, setCountries] = useState<
-    { value: string; label: string }[]
-  >([]);
 
   const roles = [
     "Actor",
@@ -214,11 +237,6 @@ function EditProfile({
     "Driver",
   ];
 
-  React.useEffect(() => {
-    fetch("/countries.json")
-      .then((res) => res.json())
-      .then((data) => setCountries(data));
-  }, []);
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -329,22 +347,10 @@ function EditProfile({
             setData((p) => ({ ...p, date_of_birth: e?.toString() ?? "" }))
           }
         />
-        <Select
-          onValueChange={(value) => setData((p) => ({ ...p, location: value }))}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="what's your location" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              {countries.map((item, index) => (
-                <SelectItem key={index} value={item.value}>
-                  {item.label}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        <LocationSelect
+          value={data.location}
+          onChange={(value) => setData((p) => ({ ...p, location: value }))}
+        />
         <Textarea
           className="h-full"
           placeholder="Give us a brief description"
@@ -360,5 +366,65 @@ function EditProfile({
         </SheetClose>
       </SheetFooter>
     </SheetContent>
+  );
+}
+
+function UploadImage({ data }: { data: User | null }) {
+  const [file, setFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const uploadPictures = async () => {
+    setLoading(true);
+    try {
+      if (file === null) {
+        toast.error("a file must be selected");
+        return;
+      }
+
+      const response = await uploadImages([file]);
+
+      if (response.message === "success") {
+        const res = await axios.put("/api/user", {
+          id: data?._id,
+          profile_picture: response.data[0],
+          portfolio_pictures_add: response.data,
+        });
+
+        if (res.status === 200) {
+          toast.success("Portfolio created successfully");
+        } else {
+          toast.error("Error creating portfolio");
+        }
+      } else {
+        toast.error("Error uploading pictures");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Unknown error");
+    } finally {
+      setLoading(false);
+    }
+  };
+  return (
+    <DialogContent className="flex flex-col gap-10">
+      <DialogHeader className="flex flex-col items-center">
+        <DialogTitle>Upload to your portfolio</DialogTitle>
+        <DialogDescription>
+          you can add a studio photo to your portfolio
+        </DialogDescription>
+        <ImageUploadUi file={file} setFile={setFile} />
+      </DialogHeader>
+
+      <Button onClick={uploadPictures} className="w-full" disabled={loading}>
+        {loading ? (
+          <>
+            <Loader2Icon className="animate-spin" />
+            Please wait
+          </>
+        ) : (
+          "Continue"
+        )}
+      </Button>
+    </DialogContent>
   );
 }

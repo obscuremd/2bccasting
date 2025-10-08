@@ -201,9 +201,13 @@ export default function Page() {
       </div>
 
       {/* Talent Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-5 md:gap-12 gap-6 [grid-template-rows:masonry]">
+      <div className="columns-1 sm:columns-2 lg:columns-5 gap-6">
         {filteredData.map((talent, i) => (
-          <Link href={`profile/${talent._id}`} key={i}>
+          <Link
+            href={`profile/${talent._id}`}
+            key={i}
+            className="break-inside-avoid"
+          >
             <CustomCard
               primary_text={talent.fullname}
               secondary_text={`${talent.age} Years old`}

@@ -21,14 +21,26 @@ const jobs = [
 
 export default function Page() {
   return (
-    <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-      {jobs.map((job, i) => (
-        <Card key={i} className="hover:shadow-lg transition-shadow">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold">{job}</CardTitle>
-          </CardHeader>
-        </Card>
-      ))}
+    <div>
+      <header className="mb-8">
+        <h1 className="text-3xl font-extrabold">JOB VACANCY</h1>
+        <p className="text-sm text-muted-foreground mt-2 max-w-2xl flex flex-col">
+          LOCATION: ALIMOSHO LAGOS
+          <span>
+            NOW HIRING SEND YOUR CV TO WHATSAPP‪+2347047777561‬ For inquiries
+            and job placement contact us.
+          </span>
+        </p>
+      </header>
+      <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {jobs.map((job, i) => (
+          <Card key={i} className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold">{job}</CardTitle>
+            </CardHeader>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 }
