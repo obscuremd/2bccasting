@@ -4,10 +4,23 @@ import CustomCard from "@/components/local/card";
 import { Button } from "@/components/ui/button";
 import { Download, Heart, Phone } from "lucide-react";
 import { useParams } from "next/navigation";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { CopyButton } from "@/components/local/copy";
+import { Input } from "@/components/ui/input";
+import { getCurrentUser } from "@/lib/ApiService";
 
 export default function Page() {
   const [user, setUser] = useState<User | null>(null);
+  const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const [modalOpen, setModalOpen] = useState(false);
 
   const { id } = useParams<{ id: string }>();
 
@@ -26,6 +39,14 @@ export default function Page() {
     }
   }, [id]);
 
+  useEffect(() => {
+    getCurrentUser().then((res) => {
+      if (res.status === "success") {
+        setLoggedInUser(res.user);
+      }
+    });
+  }, []);
+
   if (loading) {
     return <p className="text-center p-10">Loading profile...</p>;
   }
@@ -36,6 +57,14 @@ export default function Page() {
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center gap-[10px]">
+      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+        {user?.vip ? (
+          <VipDialog user={user} />
+        ) : (
+          <NDialog user={user} loggedUser={loggedInUser} />
+        )}
+      </Dialog>
+
       {/* Hero Section */}
       <div className="w-full flex flex-col md:flex-row items-center gap-8">
         <CustomCard
@@ -52,7 +81,7 @@ export default function Page() {
                 <Button variant={"secondary"}>
                   <Heart /> Save Profile
                 </Button>
-                <Button>
+                <Button onClick={() => setModalOpen(true)}>
                   <Phone /> Contact
                 </Button>
               </div>
@@ -114,5 +143,43 @@ export default function Page() {
         )}
       </div>
     </div>
+  );
+}
+
+function VipDialog({ user }: { user: User }) {
+  return (
+    <DialogContent className="sm:max-w-md">
+      <DialogHeader>
+        <DialogTitle>Contact Info</DialogTitle>
+        <DialogDescription>
+          Copy the details below to contact {user.fullname}.
+        </DialogDescription>
+      </DialogHeader>
+
+      <div className="flex flex-col gap-4 mt-4">
+        <CopyButton value={user.email} />
+        <CopyButton value={user.phone_number} />
+      </div>
+    </DialogContent>
+  );
+}
+function NDialog({
+  user,
+  loggedUser,
+}: {
+  user: User;
+  loggedUser: User | null;
+}) {
+  return (
+    <DialogContent className="sm:max-w-md">
+      <DialogHeader>
+        <DialogTitle>Contact Info</DialogTitle>
+        <DialogDescription>
+          please input your email and {user.fullname} would contact you shortly.
+        </DialogDescription>
+      </DialogHeader>
+
+      <Input placeholder="" />
+    </DialogContent>
   );
 }
