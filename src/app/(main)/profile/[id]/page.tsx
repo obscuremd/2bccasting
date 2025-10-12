@@ -14,6 +14,8 @@ import {
 import { CopyButton } from "@/components/local/copy";
 import { Input } from "@/components/ui/input";
 import { getCurrentUser } from "@/lib/ApiService";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 export default function Page() {
   const [user, setUser] = useState<User | null>(null);
@@ -170,16 +172,72 @@ function NDialog({
   user: User;
   loggedUser: User | null;
 }) {
+  const [email, setEmail] = useState(loggedUser?.email || "");
+  const [loading, setLoading] = useState(false);
+
+  const handleRequest = async () => {
+    if (!email) {
+      toast.error("Please enter your email address");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const res = await axios.post("/api/email", {
+        to: "support@bccastings.com",
+        subject: "Contact Information Request",
+        body: `
+          A user has requested the contact information of the model <b>${
+            user.fullname
+          }</b>.<br/><br/>
+          <b>Requester Email:</b> ${email}<br/>
+          <b>Requester Name:</b> ${loggedUser?.fullname || "Guest"}<br/>
+          <b>Requested Profile:</b> ${user.fullname}
+        `,
+      });
+
+      if (res.status === 200) {
+        toast.success(
+          "✅ Your request has been received. You will be contacted shortly regarding this model."
+        );
+      } else {
+        toast.error("❌ Failed to send request. Please try again.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("❌ Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <DialogContent className="sm:max-w-md">
       <DialogHeader>
         <DialogTitle>Contact Info</DialogTitle>
         <DialogDescription>
-          please input your email and {user.fullname} would contact you shortly.
+          Please input your email and <b>{user.fullname}</b> will contact you
+          shortly.
         </DialogDescription>
       </DialogHeader>
 
-      <Input placeholder="" />
+      {!loggedUser && (
+        <Input
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="mt-3"
+        />
+      )}
+
+      <Button
+        onClick={handleRequest}
+        disabled={loading}
+        className="mt-4 w-full"
+      >
+        {loading ? "Sending..." : "Request Contact Info"}
+      </Button>
     </DialogContent>
   );
 }

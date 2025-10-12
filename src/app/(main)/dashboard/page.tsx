@@ -56,7 +56,7 @@ export default function Page() {
 
   const [profileUpdateLoading, setProfileUpdateLoading] = useState(false);
 
-  const [imageEditOpen, setImageEditOpen] = useState(false);
+  const [dialog, setDialog] = useState({ state: false, value: "" });
 
   const getAge = (dob: Date) => {
     const diff = Date.now() - dob.getTime();
@@ -125,12 +125,16 @@ export default function Page() {
       {/* Hero Section */}
 
       {/* dialog */}
-      <Dialog open={imageEditOpen} onOpenChange={setImageEditOpen}>
-        <UploadImage
-          data={data}
-          setUser={setData}
-          setModal={setImageEditOpen}
-        />
+      <Dialog
+        open={dialog.state}
+        onOpenChange={(open) => setDialog((prev) => ({ ...prev, state: open }))}
+      >
+        {dialog.value === "upload_pictures" && (
+          <UploadImage data={data} setUser={setData} setModal={setDialog} />
+        )}
+        {dialog.value === "delete_profile" && data != null && (
+          <DeleteModal data={data} setModal={setDialog} />
+        )}
       </Dialog>
 
       {/* Sheet */}
@@ -141,7 +145,7 @@ export default function Page() {
       <div className="w-full flex flex-col md:flex-row items-center gap-8">
         <CustomCard image={data?.profile_picture} profile={true} />
 
-        <div className="md:w-[40%] flex flex-col gap-8">
+        <div className=" flex flex-col gap-8">
           {/* profile info */}
 
           <div className="flex flex-col gap-2">
@@ -166,59 +170,10 @@ export default function Page() {
             </p>
             <p>{data?.bio}</p>
           </div>
-          <div className="flex flex-col gap-2">
-            <div className="flex gap-8">
-              <div className=" flex gap-2 items-center">
-                <p className="text-title2 md:text-title1 font-bold">
-                  {data?.portfolio_pictures.length}
-                </p>
-                <p className="text-body md:text-title2 font-medium text-nowrap">
-                  Portfolio Pictures
-                </p>
-              </div>
-              <div className=" flex gap-2 items-center">
-                <p className="text-title2 md:text-title1 font-bold">22</p>
-                <p className="text-body md:text-title2 font-medium text-nowrap">
-                  Page Insights
-                </p>
-              </div>
-              <div className=" flex gap-2 items-center">
-                <p className="text-title2 md:text-title1 font-bold">14</p>
-                <p className="text-body md:text-title2 font-medium text-nowrap">
-                  Saves
-                </p>
-              </div>
-            </div>
-            {data?.vip ? (
-              <p className="font-medium text-muted-foreground">
-                🎉 Welcome, <span className="font-semibold">VIP Member</span>!{" "}
-                {data.vip_start_date && data.vip_end_date ? (
-                  <>
-                    Your membership started on{" "}
-                    <span className="font-semibold text-foreground">
-                      {new Date(data.vip_start_date).toLocaleDateString()}
-                    </span>{" "}
-                    and will remain active until{" "}
-                    <span className="font-semibold text-foreground">
-                      {new Date(data.vip_end_date).toLocaleDateString()}
-                    </span>
-                    .
-                  </>
-                ) : (
-                  "We’re setting up your VIP details. You’ll see your membership dates here soon."
-                )}{" "}
-                As a VIP, you can now see who has viewed or saved your profile
-                and connect with them directly.
-              </p>
-            ) : (
-              <p className="font-medium text-muted-foreground">
-                Upgrade to <span className="font-semibold">VIP</span> to unlock
-                exclusive benefits — see who’s viewed or saved your profile and
-                connect with them instantly.
-              </p>
-            )}
-          </div>
-          <div className="grid grid-cols-2 gap-y-4 gap-x-2">
+
+          <div className="grid grid-cols-2 gap-y-4 gap-x-6">
+            <p>Email: {data?.email}</p>
+
             <p>
               Age:{" "}
               {data?.date_of_birth
@@ -244,7 +199,16 @@ export default function Page() {
 
           <div className="flex w-[50%] gap-2">
             {data?.category === "talent" && (
-              <Button onClick={() => setImageEditOpen(true)} className="w-full">
+              <Button
+                onClick={() =>
+                  setDialog((p) => ({
+                    ...p,
+                    state: true,
+                    value: "upload_pictures",
+                  }))
+                }
+                className="w-full"
+              >
                 <Upload /> Upload Picture
               </Button>
             )}
@@ -271,14 +235,20 @@ export default function Page() {
             </Button>
           </div>
           <div className="flex w-[50%] gap-2">
-            <Button
-              onClick={() => setImageEditOpen(true)}
-              variant={"secondary"}
-              className="w-full"
-            >
+            <Button onClick={Logout} variant={"secondary"} className="w-full">
               <DoorOpen /> Logout
             </Button>
-            <Button variant={"destructive"} onClick={Logout} className="w-full">
+            <Button
+              onClick={() =>
+                setDialog((p) => ({
+                  ...p,
+                  state: true,
+                  value: "delete_profile",
+                }))
+              }
+              variant={"destructive"}
+              className="w-full"
+            >
               <Trash /> Delete Account
             </Button>
           </div>
@@ -287,7 +257,10 @@ export default function Page() {
 
       <div className="flex gap-2.5 items-center w-full">
         <hr className="w-[100px] md:w-[244px] bg-foreground" />
-        <p className="text-h3 font-semibold">Portfolio </p>
+
+        <p className="text-h3 font-semibold">
+          Portfolio ({data?.portfolio_pictures.length}){" "}
+        </p>
       </div>
 
       {/* Talent Cards */}
@@ -469,7 +442,9 @@ function UploadImage({
 }: {
   data: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
-  setModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setModal: React.Dispatch<
+    React.SetStateAction<{ state: boolean; value: string }>
+  >;
 }) {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -496,7 +471,7 @@ function UploadImage({
           const updatedUser = await getCurrentUser();
           setFile(null);
           setUser(updatedUser.user);
-          setModal(false);
+          setModal((p) => ({ ...p, state: false, value: "" }));
         } else {
           toast.error("Error creating portfolio");
         }
@@ -530,6 +505,98 @@ function UploadImage({
           "Continue"
         )}
       </Button>
+    </DialogContent>
+  );
+}
+
+function DeleteModal({
+  data,
+  setModal,
+}: {
+  data: User;
+  setModal: React.Dispatch<
+    React.SetStateAction<{ state: boolean; value: string }>
+  >;
+}) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [reason, setReason] = useState("");
+
+  async function deleteUser() {
+    if (!reason.trim()) {
+      toast.error("Please provide a reason for deleting your account.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      // 🧹 1. Delete user from database
+      await axios.delete(`/api/user?id=${data._id}`);
+
+      // 📧 2. Send email notification
+      await axios.post("/api/email", {
+        to: "support@bccastings.com",
+        subject: "User Account Deletion Notice",
+        body: `
+          User <b>${data.fullname}</b> (<a href="mailto:${data.email}">${data.email}</a>) 
+          has deleted their account.<br/><br/>
+          <b>Reason:</b> ${reason}
+        `,
+      });
+
+      toast.success("Your account has been deleted. You will be missed 💔");
+      setModal({ state: false, value: "" });
+      router.push("/");
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast.error("Failed to delete your account. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <DialogContent className="flex flex-col gap-10">
+      <DialogHeader className="flex flex-col items-center">
+        <DialogTitle>Are you sure about that?</DialogTitle>
+        <DialogDescription>
+          We&apos;re sad to see you leave 😢 — could you tell us why you’re
+          deleting your account?
+        </DialogDescription>
+      </DialogHeader>
+
+      <Input
+        placeholder="Tell us why..."
+        value={reason}
+        onChange={(e) => setReason(e.target.value)}
+        disabled={loading}
+      />
+
+      <div className="flex w-full gap-2">
+        <Button
+          onClick={() => setModal((p) => ({ ...p, state: false, value: "" }))}
+          className="w-1/2"
+          disabled={loading}
+        >
+          Go Back
+        </Button>
+        <Button
+          onClick={deleteUser}
+          variant="destructive"
+          className="w-1/2"
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <Loader2Icon className="animate-spin" />
+              Please wait
+            </>
+          ) : (
+            "Delete"
+          )}
+        </Button>
+      </div>
     </DialogContent>
   );
 }

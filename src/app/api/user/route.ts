@@ -196,3 +196,36 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json(error, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  await connectMongoDb();
+
+  try {
+    const searchParams = req.nextUrl.searchParams;
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "User ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const deletedUser = await User.findByIdAndDelete(id);
+
+    if (!deletedUser) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(
+      { message: "User deleted successfully", user: deletedUser },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    return NextResponse.json(
+      { error: "Failed to delete user" },
+      { status: 500 }
+    );
+  }
+}

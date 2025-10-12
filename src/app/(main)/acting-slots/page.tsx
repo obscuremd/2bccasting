@@ -30,6 +30,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, Phone } from "lucide-react";
 import { Whatsapp } from "iconoir-react";
+import axios from "axios";
 
 type FormFields = {
   name: string;
@@ -76,18 +77,18 @@ export default function Page() {
       setLoading(true);
       setMessage("");
 
-      const res = await fetch("/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name,
-          packageSelected: form.package,
-          amount: form.amount,
-          notes: form.notes,
-        }),
+      const res = await axios.post("/api/email", {
+        to: "support@bccastings.com", // your Titan domain email
+        subject: "Acting Slots Payment Confirmation",
+        body: `
+          A payment was made by <b>${form.name}</b>.<br/>
+          <b>Package:</b> ${form.package}<br/>
+          <b>Amount Paid:</b> ${form.amount}<br/>
+          <b>Notes:</b> ${form.notes}
+        `,
       });
 
-      if (!res.ok) {
+      if (res.status !== 200) {
         throw new Error("Failed to submit");
       }
 

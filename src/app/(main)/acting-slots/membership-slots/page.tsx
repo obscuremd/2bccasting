@@ -27,6 +27,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, Phone } from "lucide-react";
+import axios from "axios";
 
 type FormFields = {
   name: string;
@@ -92,12 +93,22 @@ export default function MembershipPage() {
     try {
       setLoading(true);
       setMessage("");
-      const res = await fetch("/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+      // Send the email via your backend
+      const res = await axios.post("/api/email", {
+        to: "support@bccastings.com", // Your Titan domain email
+        subject: "Membership Payment Proof",
+        body: `
+          A new membership payment was submitted:<br/><br/>
+          <b>Name:</b> ${form.name}<br/>
+          <b>Membership Type:</b> ${form.membership}<br/>
+          <b>Amount Paid:</b> ${form.amount}<br/>
+          <b>Notes:</b> ${form.notes}
+        `,
       });
-      if (!res.ok) throw new Error("Failed to submit");
+
+      if (res.status !== 200) {
+        throw new Error("Failed to send email");
+      }
       setMessage("✅ Membership payment proof submitted successfully!");
       setForm({ name: "", membership: "", amount: "", notes: "" });
     } catch (err) {
