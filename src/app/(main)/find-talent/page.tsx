@@ -115,12 +115,12 @@ export default function Page() {
       <div className="w-full flex flex-col items-center px-4 md:px-10 lg:px-20 gap-6">
         <div className="flex flex-col items-center gap-2 text-center">
           <p className="md:text-h3 text-h5 font-semibold">
-            🔍 Find the right talent, faster.
+            Find The Right Talent, Faster.
           </p>
           <p className="md:text-h5 text-title2 font-medium md:w-[60%] text-secondary-foreground">
-            Easily explore our network of actors, models, directors, and more.
-            With powerful search tools, finding the right match for your next
-            project has never been simpler.
+            Easily explore a professional network of Actors, Models, Directors
+            and more for Commercials and Films with powerful search tools to
+            find the right match for your project.
           </p>
         </div>
 
