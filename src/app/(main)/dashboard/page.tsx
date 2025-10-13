@@ -171,6 +171,28 @@ export default function Page() {
             <p>{data?.bio}</p>
           </div>
 
+          <p>
+            {data?.vip ? (
+              <>
+                You are a VIP member. Your VIP subscription started on{" "}
+                <span className="font-semibold">
+                  {data?.vip_start_date
+                    ? new Date(data.vip_start_date).toLocaleDateString()
+                    : "N/A"}
+                </span>{" "}
+                and will end on{" "}
+                <span className="font-semibold text-red-500">
+                  {data?.vip_end_date
+                    ? new Date(data.vip_end_date).toLocaleDateString()
+                    : "N/A"}
+                </span>
+                .
+              </>
+            ) : (
+              "Upgrade to VIP to see who has viewed or saved your profile, and connect directly with them."
+            )}
+          </p>
+
           <div className="grid grid-cols-2 gap-y-4 gap-x-6">
             <p>Email: {data?.email}</p>
 
