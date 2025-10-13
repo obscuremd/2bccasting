@@ -108,9 +108,13 @@ export default function Page() {
           BC CASTINGS — Get Movie Role Slot
         </h1>
         <p className="text-sm text-muted-foreground mt-2 max-w-2xl">
-          Select the number of role slots suitable for you and pay using the
-          account details below. After payment, send proof to get your pass code
-          and VIP access.
+          We are Nigerian&apos;s Leading Casting agencies based in Lagos and
+          Accra with experience in Movies Production, Home Video, Skit and
+          Musical Video shoot.If you are looking for exposure and recognition in
+          Nollywood, start by featuring in upcoming Movies. Get a Movie Role or
+          Skit Role and Secure your spot by getting our Movie Roles Membership
+          Subscription or Movie Roles Slots and start featuring in Upcoming
+          Movies.
         </p>
       </header>
 

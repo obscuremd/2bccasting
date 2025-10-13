@@ -111,92 +111,122 @@ export default function Page() {
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center gap-[50px] md:gap-[250px]">
-      {/* Hero Section */}
-      <div className="flex flex-col items-center gap-2.5 justify-center">
-        <p className="md:text-h3 text-h5 font-semibold text-center">
-          🔍 Find the right talent, faster.
-        </p>
-        <p className="md:text-h5 text-title2 font-medium md:w-[50%] text-center text-secondary-foreground">
-          Easily explore our network of actors, models, directors, and more.
-          With powerful search tools, finding the right match for your next
-          project has never been simpler.
-        </p>
-        <div className="flex gap-3 w-[50%] max-md:w-[90%]">
-          <Input
-            placeholder="Find a Talent"
-            className="w-full"
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline">Filters</Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Filter Options</DialogTitle>
-                <DialogDescription>
-                  Narrow down your search with filters
-                </DialogDescription>
-              </DialogHeader>
+      {/* Filter + Search Section */}
+      <div className="w-full flex flex-col items-center px-4 md:px-10 lg:px-20 gap-6">
+        <div className="flex flex-col items-center gap-2 text-center">
+          <p className="md:text-h3 text-h5 font-semibold">
+            🔍 Find the right talent, faster.
+          </p>
+          <p className="md:text-h5 text-title2 font-medium md:w-[60%] text-secondary-foreground">
+            Easily explore our network of actors, models, directors, and more.
+            With powerful search tools, finding the right match for your next
+            project has never been simpler.
+          </p>
+        </div>
 
-              {/* Role filter */}
-              <div className="flex flex-col gap-2">
-                <p className="font-medium">Role</p>
-                <Select onValueChange={(val) => setRole(val)} value={role}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {roles.map((role, index) => (
-                      <SelectItem key={index} value={role.toLowerCase()}>
-                        {role}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              {/* Sex filter */}
-              <div className="flex flex-col gap-2">
-                <p className="font-medium">Sex</p>
-                <Select onValueChange={(val) => setSex(val)} value={sex}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select sex" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Male">Male</SelectItem>
-                    <SelectItem value="Female">Female</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+        {/* Filters */}
+        <div className="w-full max-w-5xl bg-muted/40 border border-border rounded-2xl p-5 md:p-8 shadow-sm">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {/* Search Field */}
+            <div className="flex flex-col gap-2">
+              <p className="font-medium text-sm text-muted-foreground">
+                Search
+              </p>
+              <Input
+                placeholder="Search by name..."
+                className="w-full border-border focus:ring-2 focus:ring-primary/50"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
 
-              {/* Location filter */}
-              <div className="flex flex-col gap-2">
-                <p className="font-medium">Location</p>
-                <Input
-                  placeholder="Enter location"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                />
-              </div>
+            {/* Role filter */}
+            <div className="flex flex-col gap-2">
+              <p className="font-medium text-sm text-muted-foreground">Role</p>
+              <Select onValueChange={(val) => setRole(val)} value={role}>
+                <SelectTrigger className="w-full border-border focus:ring-2 focus:ring-primary/50">
+                  <SelectValue placeholder="Select role" />
+                </SelectTrigger>
+                <SelectContent>
+                  {roles.map((role, index) => (
+                    <SelectItem key={index} value={role.toLowerCase()}>
+                      {role}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-              {/* Age filter */}
-              <div className="flex flex-col gap-2">
-                <p className="font-medium">Age Range</p>
-                <Slider
-                  min={0}
-                  max={80}
-                  step={1}
-                  value={ageRange}
-                  onValueChange={(v) =>
-                    setAgeRange([v[0], v[1]] as [number, number])
-                  }
-                />
-                <p>
-                  {ageRange[0]} - {ageRange[1]} years
-                </p>
-              </div>
-            </DialogContent>
-          </Dialog>
+            {/* Sex filter */}
+            <div className="flex flex-col gap-2">
+              <p className="font-medium text-sm text-muted-foreground">Sex</p>
+              <Select onValueChange={(val) => setSex(val)} value={sex}>
+                <SelectTrigger className="w-full border-border focus:ring-2 focus:ring-primary/50">
+                  <SelectValue placeholder="Select sex" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Male">Male</SelectItem>
+                  <SelectItem value="Female">Female</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Location filter */}
+            <div className="flex flex-col gap-2">
+              <p className="font-medium text-sm text-muted-foreground">
+                Location
+              </p>
+              <Input
+                placeholder="Enter location..."
+                className="w-full border-border focus:ring-2 focus:ring-primary/50"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+              />
+            </div>
+
+            {/* Age Range filter */}
+            <div className="flex flex-col gap-2 col-span-1 md:col-span-2">
+              <p className="font-medium text-sm text-muted-foreground">
+                Age Range
+              </p>
+              <Slider
+                min={0}
+                max={80}
+                step={1}
+                value={ageRange}
+                onValueChange={(v) =>
+                  setAgeRange([v[0], v[1]] as [number, number])
+                }
+              />
+              <p className="text-sm text-muted-foreground">
+                {ageRange[0]} - {ageRange[1]} years
+              </p>
+            </div>
+          </div>
+
+          {/* Clear Filters Button */}
+          {(search ||
+            role ||
+            sex ||
+            location ||
+            ageRange[0] !== 0 ||
+            ageRange[1] !== 80) && (
+            <div className="flex justify-end mt-6">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setSearch("");
+                  setRole("");
+                  setSex("");
+                  setLocation("");
+                  setAgeRange([0, 80]);
+                }}
+              >
+                Clear Filters
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 

@@ -7,6 +7,9 @@ import { getCurrentUser, GetProfiles } from "@/lib/ApiService";
 import toast from "react-hot-toast";
 import RollingGallery from "@/components/RollingGallery";
 import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import axios from "axios";
 
 export default function Home() {
   const router = useRouter();
@@ -98,13 +101,14 @@ export default function Home() {
           <p className="md:text-h3 text-h5 font-semibold">About Us </p>
         </div>
         <p className="md:w-[75%] md:text-h5 text-title2 font-medium">
-          At BC Castings, we believe every dream deserves a spotlight. We’re a
-          dynamic recruiting agency connecting talented individuals with the
-          right opportunities in film, fashion, media, and entertainment. From
-          actors, models, and dancers to directors, producers, and
-          scriptwriters, we bring together the people who make creativity come
-          alive. Whether you’re a recruiter searching for the perfect fit or a
-          talent ready to shine, BC Castings is the bridge that makes it happen.
+          BC Casting Agency based in Lagos Nigeria, we believe every dream
+          deserves a spotlight. We’re a dynamic recruiting agency connecting
+          talented individuals with the right opportunities in film, fashion,
+          media, and entertainment. From actors, models, and dancers to
+          directors, producers, and scriptwriters, we bring together the people
+          who make creativity come alive. Whether you’re a recruiter searching
+          for the perfect fit or a talent ready to shine, BC Castings is the
+          bridge that makes it happen.
         </p>
         <div className="flex gap-3">
           {user === null ? (
@@ -138,13 +142,13 @@ export default function Home() {
           Subscription or Movie Roles Slots and start featuring in Upcoming
           Movies.
         </p>
-        <div className="flex gap-3">
+        <div className="flex flex-col md:flex-row gap-3">
           <Button
             size={"lg"}
             className="w-fit"
             onClick={() => router.push("/acting-slots")}
           >
-            Get movie slot rows
+            Get movie row slot
           </Button>
           <Button
             variant={"secondary"}
@@ -156,18 +160,217 @@ export default function Home() {
           </Button>
         </div>
       </div>
-      <div className="flex flex-col gap-6 items-center justify-center border border-accent md:min-h-[500px] md:py-20 py-5 px-4 text-center">
+      <ContactUsForm />
+    </div>
+  );
+}
+
+function ContactUsForm() {
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    location: "",
+    projectType: "",
+    talentType: "",
+    beginDate: "",
+    deadline: "",
+    budget: "",
+    info: "",
+  });
+
+  const handleChange = (field: string, value: string) => {
+    setForm({ ...form, [field]: value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    // basic validation
+    if (
+      !form.name ||
+      !form.phone ||
+      !form.email ||
+      !form.location ||
+      !form.projectType ||
+      !form.talentType ||
+      !form.beginDate ||
+      !form.deadline ||
+      !form.budget ||
+      !form.info
+    ) {
+      toast.error("⚠️ Please fill in all fields");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const body = `
+        📩 New Project Inquiry Received:
+
+        👤 Name / Company: ${form.name}
+        📞 Phone: ${form.phone}
+        📧 Email: ${form.email}
+        📍 Location: ${form.location}
+        🎬 Project Type: ${form.projectType}
+        🧑‍🎤 Talent Needed: ${form.talentType}
+        🗓️ Begin Date: ${form.beginDate}
+        ⏰ Deadline: ${form.deadline}
+        💰 Budget: ${form.budget}
+
+        📝 More Info:
+        ${form.info}
+      `;
+
+      const res = await axios.post("/api/email", {
+        to: "support@bccastings.com",
+        subject: "🎥 New Casting Project Inquiry",
+        body,
+      });
+
+      if (res.status === 200) {
+        toast.success(
+          "Thanks for the message We will contact you within 24hrs"
+        );
+        setForm({
+          name: "",
+          phone: "",
+          email: "",
+          location: "",
+          projectType: "",
+          talentType: "",
+          beginDate: "",
+          deadline: "",
+          budget: "",
+          info: "",
+        });
+      }
+    } catch (err) {
+      toast.error("❌ Failed to send your inquiry. Please try again later.");
+      console.error("Contact form error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col w-full gap-8 items-center justify-center border border-accent md:min-h-[500px] md:py-20 py-10 px-6 text-center rounded-xl">
+      <div className="flex flex-col gap-2">
         <p className="md:text-h3 text-h5 font-semibold">Contact Us</p>
-        <p className="max-w-2xl  md:text-h5 text-title2 font-medium">
-          Got questions or ready to connect? We’d love to hear from you! Reach
-          out to BC Castings at{" "}
-          <span className="font-semibold">support@bccastings.com</span> and
-          let’s bring talent and opportunity together.
+        <p className="max-w-2xl mx-auto md:text-title1 text-title2 font-medium text-secondary-foreground">
+          Are you looking for suitable cast for your project in Commercials or
+          Films? We collaborate with Local and International Clients. Fill the
+          form below or email{" "}
+          <span className="font-semibold">support@bccastings.com</span>.
         </p>
-        <a href="mailto:support@bccastings.com" className="w-full">
-          <Button className="w-full">Send Mail</Button>
-        </a>
       </div>
+
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 text-left"
+      >
+        <div>
+          <p className="font-medium mb-1">Name / Company</p>
+          <Input
+            value={form.name}
+            onChange={(e) => handleChange("name", e.target.value)}
+            placeholder="Enter your name or company"
+          />
+        </div>
+
+        <div>
+          <p className="font-medium mb-1">Phone No.</p>
+          <Input
+            value={form.phone}
+            onChange={(e) => handleChange("phone", e.target.value)}
+            placeholder="Enter your phone number"
+          />
+        </div>
+
+        <div>
+          <p className="font-medium mb-1">Email</p>
+          <Input
+            type="email"
+            value={form.email}
+            onChange={(e) => handleChange("email", e.target.value)}
+            placeholder="Enter your email address"
+          />
+        </div>
+
+        <div>
+          <p className="font-medium mb-1">Location</p>
+          <Input
+            value={form.location}
+            onChange={(e) => handleChange("location", e.target.value)}
+            placeholder="City, Country"
+          />
+        </div>
+
+        <div>
+          <p className="font-medium mb-1">Type of Project</p>
+          <Input
+            value={form.projectType}
+            onChange={(e) => handleChange("projectType", e.target.value)}
+            placeholder="e.g. Commercial, Short Film, Documentary"
+          />
+        </div>
+
+        <div>
+          <p className="font-medium mb-1">Type of Talent Needed</p>
+          <Input
+            value={form.talentType}
+            onChange={(e) => handleChange("talentType", e.target.value)}
+            placeholder="e.g. Models, Actors, Voice Artists"
+          />
+        </div>
+
+        <div>
+          <p className="font-medium mb-1">Begin Date</p>
+          <Input
+            type="date"
+            value={form.beginDate}
+            onChange={(e) => handleChange("beginDate", e.target.value)}
+          />
+        </div>
+
+        <div>
+          <p className="font-medium mb-1">Deadline</p>
+          <Input
+            type="date"
+            value={form.deadline}
+            onChange={(e) => handleChange("deadline", e.target.value)}
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <p className="font-medium mb-1">Budget</p>
+          <Input
+            value={form.budget}
+            onChange={(e) => handleChange("budget", e.target.value)}
+            placeholder="Enter budget (e.g. $1000 or ₦500,000)"
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <p className="font-medium mb-1">
+            Give more information about your project
+          </p>
+          <Textarea
+            value={form.info}
+            onChange={(e) => handleChange("info", e.target.value)}
+            placeholder="Describe your project in detail..."
+            rows={5}
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Sending..." : "Submit Inquiry"}
+          </Button>
+        </div>
+      </form>
     </div>
   );
 }

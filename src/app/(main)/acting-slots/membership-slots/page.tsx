@@ -126,9 +126,13 @@ export default function MembershipPage() {
           BC CASTINGS — Membership Slots
         </h1>
         <p className="text-sm text-muted-foreground mt-2 max-w-2xl">
-          Nigeria&apos;s leading casting agency in Lagos & Accra. Get featured
-          in Movies, Skits, and Music Videos by securing your Membership Movie
-          Role Subscription.
+          We are Nigerian&apos;s Leading Casting agencies based in Lagos and
+          Accra with experience in Movies Production, Home Video, Skit and
+          Musical Video shoot.If you are looking for exposure and recognition in
+          Nollywood, start by featuring in upcoming Movies. Get a Movie Role or
+          Skit Role and Secure your spot by getting our Movie Roles Membership
+          Subscription or Movie Roles Slots and start featuring in Upcoming
+          Movies.
         </p>
       </header>
 
