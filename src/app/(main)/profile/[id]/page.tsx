@@ -79,14 +79,9 @@ export default function Page() {
           <div className="flex flex-col gap-2">
             <div className="flex flex-col md:flex-row w-full gap-4 items-start md:items-center">
               <p className="text-h3 font-semibold">{user.fullname}</p>
-              <div className="flex gap-2">
-                <Button variant={"secondary"}>
-                  <Heart /> Save Profile
-                </Button>
-                <Button onClick={() => setModalOpen(true)}>
-                  <Phone /> Contact
-                </Button>
-              </div>
+              <Button onClick={() => setModalOpen(true)}>
+                <Phone /> Contact
+              </Button>
             </div>
             <p className="capitalize text-title1 font-semibold">{user.role}</p>
             <p>{user.bio || "No bio provided."}</p>
@@ -116,9 +111,9 @@ export default function Page() {
             </p>
           </div>
 
-          <Button>
+          {/* <Button>
             <Download /> Download CV
-          </Button>
+          </Button> */}
         </div>
       </div>
 
