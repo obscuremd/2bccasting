@@ -79,11 +79,11 @@ export default function Header() {
           <Link href="/acting-slots">
             <Button variant="ghost">Acting Slots</Button>
           </Link>
+          <Link href="/acting-slots/membership-slots">
+            <Button variant="ghost">Membership Slots</Button>
+          </Link>
           <Link href="/job-vacancies">
             <Button variant="ghost">Job Vacancies</Button>
-          </Link>
-          <Link href="/#about">
-            <Button variant="ghost">About Us</Button>
           </Link>
         </nav>
 
@@ -117,14 +117,15 @@ export default function Header() {
               Acting Slots
             </Button>
           </Link>
+          <Link
+            href="/acting-slots/membership-slots"
+            onClick={() => setIsOpen(false)}
+          >
+            <Button variant="ghost">Membership Slots</Button>
+          </Link>
           <Link href="/job-vacancies" onClick={() => setIsOpen(false)}>
             <Button variant="ghost" className="w-full justify-start">
               Job Vacancies
-            </Button>
-          </Link>
-          <Link href="/#about" onClick={() => setIsOpen(false)}>
-            <Button variant="ghost" className="w-full justify-start">
-              About Us
             </Button>
           </Link>
 
