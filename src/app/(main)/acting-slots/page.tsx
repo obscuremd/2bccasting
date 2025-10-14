@@ -299,7 +299,7 @@ export default function Page() {
                 <div className="md:col-span-3">
                   <Label>Payment Evidence / Notes</Label>
                   <Textarea
-                    placeholder="Depositor name, date, transaction ID, WhatsApp number..."
+                    placeholder="Send proof of payment"
                     value={form.notes}
                     onChange={(e) => handleChange("notes", e.target.value)}
                     required
