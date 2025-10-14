@@ -296,6 +296,7 @@ export default function MembershipPage() {
               <div className="md:col-span-3">
                 <Label>Payment Evidence / Notes</Label>
                 <Textarea
+                  placeholder="Send proof of payment"
                   value={form.notes}
                   onChange={(e) => handleChange("notes", e.target.value)}
                   required

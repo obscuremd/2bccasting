@@ -101,14 +101,15 @@ export default function Home() {
           <p className="md:text-h3 text-h5 font-semibold">About Us </p>
         </div>
         <p className="md:w-[75%] md:text-h5 text-title2 font-medium">
-          BC Casting Agency based in Lagos Nigeria, we believe every dream
-          deserves a spotlight. We’re a dynamic recruiting agency connecting
-          talented individuals with the right opportunities in film, fashion,
-          media, and entertainment. From actors, models, and dancers to
-          directors, producers, and scriptwriters, we bring together the people
-          who make creativity come alive. Whether you’re a recruiter searching
-          for the perfect fit or a talent ready to shine, BC Castings is the
-          bridge that makes it happen.
+          BC Castings based in Lagos Nigeria.We believe every dream deserves a
+          spotlight, we offer complete services, we are a dynamic recruiting
+          agency connecting talented individuals with the right opportunity in
+          Casting for Films extra,Commercials, Fashion, Media and Entertainment,
+          from Actors to Models, Dancers, Directors, Producers, Scriptwriters
+          and more. We bring together the people who makes creativity come
+          alive. Whether you are a Recruiter searching for the perfect fit for
+          your project or a talent ready to shine, BC Castings is the bridge
+          that makes it happen.
         </p>
         <div className="flex gap-3">
           {user === null ? (
@@ -134,13 +135,13 @@ export default function Home() {
           <p className="md:text-h3 text-h5 font-semibold">Acting Slots</p>
         </div>
         <p className="md:w-[75%] md:text-h5 text-title2 font-medium">
-          We are Nigerian&apos;s Leading Casting agencies based in Lagos and
-          Accra with experience in Movies Production, Home Video, Skit and
-          Musical Video shoot.If you are looking for exposure and recognition in
-          Nollywood, start by featuring in upcoming Movies. Get a Movie Role or
-          Skit Role and Secure your spot by getting our Movie Roles Membership
-          Subscription or Movie Roles Slots and start featuring in Upcoming
-          Movies.
+          We are Nigeria&#39;s Leading Casting Agency based in Lagos and Accra
+          with experience in Movie Production, Home Videos, Skits and Musical
+          Video shoot. If you are looking for exposure and recognition in
+          Nollywood , start by featuring in upcoming movies. Get a Movie role or
+          Skit role and secure your spot by getting our Movie Roles Membership
+          subscription or Movie Roles Slots and start featuring
+          in Upcoming Movies
         </p>
         <div className="flex flex-col md:flex-row gap-3">
           <Button
@@ -349,7 +350,7 @@ function ContactUsForm() {
           <Input
             value={form.budget}
             onChange={(e) => handleChange("budget", e.target.value)}
-            placeholder="Enter budget (e.g. $1000 or ₦500,000)"
+            placeholder="Enter budget (e.g. $5000 or ₦5,000,000)"
           />
         </div>
 
