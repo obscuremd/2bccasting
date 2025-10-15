@@ -189,7 +189,7 @@ export default function Page() {
                 .
               </>
             ) : (
-              "Upgrade to VIP to see who has viewed or saved your profile, and connect directly with them."
+              "UPGRADE TO VIP: Your phone Number and Email will appear on your profile web interface. You talk and transact directly with Recruiters to get paid, you  keep all benefits and also see who viewed or saved your profile."
             )}
           </p>
 
