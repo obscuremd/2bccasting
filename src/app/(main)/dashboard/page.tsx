@@ -305,6 +305,8 @@ function EditProfile({
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }) {
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [profilePicture, setProfilePicture] = useState<File | null>(null);
 
   const roles = [
     "Actor",
@@ -337,12 +339,50 @@ function EditProfile({
     role: "",
   });
 
+  /** 🖼️ Upload profile picture to Firebase */
+  const handleProfileUpload = async () => {
+    if (!profilePicture) {
+      toast.error("Please select an image to upload.");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const response = await uploadImages([profilePicture]);
+      if (response.message === "success") {
+        const imageUrl = response.data[0];
+
+        // Update user’s profile picture in the database
+        const res = await axios.put("/api/user", {
+          id: user?._id,
+          profile_picture: imageUrl,
+        });
+
+        if (res.status === 200) {
+          toast.success("Profile picture updated successfully!");
+          const updatedUser = await getCurrentUser();
+          setUser(updatedUser.user);
+          setProfilePicture(null);
+        } else {
+          toast.error("Error updating profile picture");
+        }
+      } else {
+        toast.error("Image upload failed.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Error uploading image.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  /** ✏️ Save other profile changes */
   const saveChanges = async () => {
     if (!user) return;
     setLoading(true);
 
     try {
-      // remove empty fields
       const filteredData = Object.fromEntries(
         Object.entries(data).filter(
           ([_, value]) => value && value.trim() !== ""
@@ -362,7 +402,6 @@ function EditProfile({
 
       if (res.status === 200) {
         toast.success("Profile updated successfully");
-        console.log("response:", res);
         const updatedUser = await getCurrentUser();
         setUser(updatedUser.user);
       } else {
@@ -385,7 +424,44 @@ function EditProfile({
         </SheetDescription>
       </SheetHeader>
 
-      <div className="grid flex-1 auto-rows-min gap-6 px-4">
+      <div className="grid flex-1 auto-rows-min gap-6 px-4 overflow-y-scroll">
+        {/* 🖼️ Profile Picture Upload */}
+        <div className="flex flex-col items-center gap-3">
+          <Label>Profile Picture</Label>
+          <div className="w-24 h-24 rounded-full overflow-hidden border">
+            <img
+              src={
+                profilePicture
+                  ? URL.createObjectURL(profilePicture)
+                  : user?.profile_picture || "/placeholder.jpg"
+              }
+              alt="Profile preview"
+              className="object-cover w-full h-full"
+            />
+          </div>
+
+          <Input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setProfilePicture(e.target.files?.[0] ?? null)}
+          />
+
+          <Button
+            onClick={handleProfileUpload}
+            disabled={uploading || !profilePicture}
+            variant="secondary"
+          >
+            {uploading ? (
+              <>
+                <Loader2Icon className="animate-spin mr-2" /> Uploading...
+              </>
+            ) : (
+              "Upload Profile Picture"
+            )}
+          </Button>
+        </div>
+
+        {/* ✏️ Other Profile Fields */}
         <Input
           placeholder="Email"
           className="w-full"
@@ -445,6 +521,7 @@ function EditProfile({
           onChange={(e) => setData((p) => ({ ...p, bio: e.target.value }))}
         />
       </div>
+
       <SheetFooter>
         <Button onClick={saveChanges} disabled={loading}>
           {loading ? <Loader2Icon className="animate-spin" /> : "Save changes"}
