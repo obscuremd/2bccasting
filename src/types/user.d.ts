@@ -1,12 +1,25 @@
 interface AuthData {
   email: string;
   password: string;
+  purpose?: "login" | "forgot_password";
 }
 
 interface OtpData {
   email: string;
   code: number;
+  purpose?: "login" | "forgot_password";
   createdAt: Date;
+}
+
+interface RegisterData {
+  email: string;
+  password: string;
+  fullname: string;
+  bio: string;
+  gender: string;
+  location: string;
+  category: string;
+  date_of_birth: string;
 }
 
 // types/User.ts

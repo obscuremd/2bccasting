@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   authenticate,
   register,
@@ -6,6 +7,8 @@ import {
 import { connectMongoDb } from "@/lib/mongoDb";
 import { User } from "@/Models/UserModel";
 import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 export async function POST(req: NextRequest) {
   await connectMongoDb();
@@ -34,20 +37,22 @@ export async function GET(req: NextRequest) {
   const id = searchParams.get("id");
   const fullname = searchParams.get("fullname");
   const portfolio = searchParams.get("portfolio");
-  const saved = searchParams.get("saved"); // 👈 new query param
+  const saved = searchParams.get("saved");
+  const role = searchParams.get("role") || "talent";
+  const page = parseInt(searchParams.get("page") || "1", 10);
+  const limit = parseInt(searchParams.get("limit") || "20", 10);
 
   try {
     // Get by ID
     if (id && !saved) {
       const user = await User.findById(id).populate("saved_profiles");
-
       if (!user) {
         return NextResponse.json({ error: "User not found" }, { status: 404 });
       }
       return NextResponse.json(user, { status: 200 });
     }
 
-    // Get saved profiles for a user
+    // Get saved profiles
     if (id && saved === "true") {
       const user = await User.findById(id).populate("saved_profiles");
       if (!user) {
@@ -56,33 +61,36 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(user.saved_profiles, { status: 200 });
     }
 
-    // Get by fullname (case-insensitive match)
+    // Search by fullname
     if (fullname) {
       const users = await User.find({
         fullname: { $regex: fullname, $options: "i" },
-      });
+        profile_visibility: true,
+      }).sort({ fullname: 1 });
       return NextResponse.json(users, { status: 200 });
     }
 
-    // Get random portfolio pictures for homepage
-    if (portfolio === "random") {
+    // ✅ Portfolio view — each portfolio picture becomes its own entry
+    if (portfolio === "ordered") {
+      const skip = (page - 1) * limit;
+
       const results = await User.aggregate([
         {
           $match: {
-            category: "talent",
+            category: role, // talent or scout
             portfolio_pictures: { $exists: true, $ne: [] },
+            profile_visibility: true, // only visible
           },
         },
-        { $unwind: "$portfolio_pictures" }, // one doc per picture
-        { $sample: { size: 20 } }, // randomly pick 20
+        // Unwind so each picture becomes its own document
+        { $unwind: "$portfolio_pictures" },
         {
           $project: {
-            picture: "$portfolio_pictures", // rename field
+            picture: "$portfolio_pictures",
             fullname: 1,
             role: 1,
-            location: 1, // ✅ include location
-            gender: 1, // ✅ include gender
-
+            location: 1,
+            gender: 1,
             age: {
               $dateDiff: {
                 startDate: "$date_of_birth",
@@ -92,15 +100,31 @@ export async function GET(req: NextRequest) {
             },
           },
         },
+        // Sort alphabetically by picture filename or URL
+        { $sort: { picture: 1 } },
+        { $skip: skip },
+        { $limit: limit },
       ]);
 
-      return NextResponse.json(results, { status: 200 });
+      return NextResponse.json(
+        {
+          data: results,
+          page,
+          limit,
+          nextPage: results.length === limit ? page + 1 : null,
+        },
+        { status: 200 }
+      );
     }
 
-    // Default: return all users
-    const users = await User.find();
+    // Default: all users (only visible)
+    const users = await User.find({ profile_visibility: true }).sort({
+      fullname: 1,
+    });
+
     return NextResponse.json(users, { status: 200 });
   } catch (error) {
+    console.error("GET /api/users error:", error);
     return NextResponse.json({ error }, { status: 500 });
   }
 }
@@ -118,6 +142,7 @@ export async function PUT(req: NextRequest) {
       saved_profiles_add, // saved profiles to add
       saved_profiles_remove, // saved profiles to remove
       saved_profiles_replace, // replace saved profiles array
+      password,
       ...updates
     } = body;
 
@@ -128,7 +153,7 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    const updateQuery: Record<string, unknown> = { $set: updates };
+    const updateQuery: Record<string, any> = { $set: updates };
 
     /** ---------------- Portfolio Pictures ---------------- **/
     // Replace the entire portfolio
@@ -182,6 +207,11 @@ export async function PUT(req: NextRequest) {
       };
     }
 
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updateQuery.$set.password = hashedPassword;
+    }
+
     const updatedUser = await User.findByIdAndUpdate(id, updateQuery, {
       new: true,
       runValidators: true,
@@ -189,6 +219,28 @@ export async function PUT(req: NextRequest) {
 
     if (!updatedUser) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    if (password) {
+      const token = jwt.sign(
+        {
+          id: updatedUser._id,
+          email: updatedUser.email,
+          category: updatedUser.category,
+          role: updatedUser.role,
+        },
+        process.env.NEXT_PUBLIC_JWT_SECRET as string,
+        { expiresIn: "2d" }
+      );
+
+      return NextResponse.json(
+        {
+          message: "Password updated successfully",
+          token,
+          user: updatedUser,
+        },
+        { status: 200 }
+      );
     }
 
     return NextResponse.json(updatedUser, { status: 200 });

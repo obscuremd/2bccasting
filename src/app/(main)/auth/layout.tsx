@@ -19,6 +19,8 @@ export default function AuthLayout({
         router.push("/auth/register");
       } else if (response.status === "success") {
         router.push("/dashboard");
+      } else if (response.status === "change-password") {
+        router.push("/auth/change-password");
       } else {
         router.push("/auth");
       }

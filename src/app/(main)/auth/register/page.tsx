@@ -124,12 +124,13 @@ export default function Page() {
               Talent
             </TabsTrigger>
             <TabsTrigger value="scout" onClick={() => setCategory("scout")}>
-              Scout
+              Recruiter
             </TabsTrigger>
           </TabsList>
           <p className="text-title2 font-medium text-center">
-            ✨ Join BC Casting to connectss with recruiters, discover
-            opportunities, and showcase your talent—all in one place.
+            {category === "scout"
+              ? "Free Registration:Recruiting talents for your project made easy,  Upload one ads placement such as photo - flayer image interested talent will contact you."
+              : "Requirement Studio pictures: Registration and ads placement are free, discover the opportunity to showcase for recruiters to find and work with you."}
           </p>
           <TabsContent value="talent" className="w-full">
             <Content data={data} setData={setData} category="talent" />

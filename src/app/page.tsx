@@ -32,7 +32,11 @@ export default function Home() {
     async function getFeed() {
       setLoading(true);
       try {
-        const response = await GetProfiles();
+        const response = await GetProfiles({
+          limit: 10,
+          page: 1,
+          role: "talent",
+        });
         if (response.status === "success") {
           // extract only pictures into images
           const pics = response.data

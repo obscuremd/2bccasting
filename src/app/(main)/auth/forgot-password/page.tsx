@@ -19,13 +19,11 @@ import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useState } from "react";
-import Link from "next/link";
 
 export default function Page() {
   const router = useRouter();
 
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false); // dialog control
@@ -33,12 +31,12 @@ export default function Page() {
   async function Authenticate() {
     setLoading(true);
     try {
-      if (email === "" || password === "") {
-        toast.error("provide email or password");
+      if (email === "") {
+        toast.error("provide email");
         return;
       }
 
-      const res = await Auth({ email, password, purpose: "login" });
+      const res = await Auth({ email, purpose: "forgot_password" });
       if (res.status === "error") {
         toast.error(res.message);
         return;
@@ -52,16 +50,17 @@ export default function Page() {
   async function VerifyOtp() {
     setLoading(true);
     try {
-      const res = await OtpVerify({ email, code: Number(code) });
+      const res = await OtpVerify({
+        email,
+        code: Number(code),
+        purpose: "forgot_password",
+      });
       if (res.status === "error") {
         toast.error(res.message);
         return;
-      } else if (res.status === "pending") {
-        toast.error(res.message);
-        router.push("/auth/register");
       } else {
-        toast("Otp Verified");
-        router.push("/dashboard");
+        toast("Otp Verified you can now change your password");
+        router.push("/auth/change-password");
       }
     } finally {
       setLoading(false);
@@ -114,12 +113,10 @@ export default function Page() {
       />
       <div className="md:p-8 flex flex-col gap-5 items-center justify-center">
         <div className="flex flex-col gap-2">
-          <p className="text-h3 font-semibold text-center">
-            Unlock opportunities. Join the stage.
-          </p>
+          <p className="text-h3 font-semibold text-center">Forgot Password ?</p>
           <p className="text-title2 font-medium text-center">
-            ✨ Join BC Casting to connect with recruiters, discover
-            opportunities, and showcase your talent—all in one place.
+            Enter your email to receive a 6-digit code to reset your password
+            and recover your account.
           </p>
         </div>
         <Input
@@ -128,19 +125,6 @@ export default function Page() {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <Input
-          placeholder="Password"
-          type="password"
-          className="w-full"
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <Link
-          className="self-start my-[-10px] cursor-pointer"
-          href={"/auth/forgot-password"}
-        >
-          <p>Forgot Password ?</p>
-        </Link>
         <Button onClick={Authenticate} className="w-full" disabled={loading}>
           {loading ? (
             <>

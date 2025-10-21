@@ -1,18 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError } from "axios";
 import { jwtDecode } from "jwt-decode";
 
 export async function Auth({
   email,
   password,
+  purpose = "login",
 }: {
   email: string;
-  password: string;
+  password?: string;
+  purpose?: "login" | "forgot_password";
 }): Promise<{ message: string; status: "success" | "error" }> {
   try {
     const response = await axios.post("/api/user?action=authenticate", {
       email,
       password,
+      purpose,
     });
+    if (response.data.status !== 200) {
+      return { message: response.data.message, status: "error" };
+    }
     return { message: response.data.message, status: "success" };
   } catch (error) {
     console.log(error);
@@ -23,17 +30,23 @@ export async function Auth({
 export async function OtpVerify({
   code,
   email,
+  purpose = "login",
 }: {
   code: number;
   email: string;
+  purpose?: "login" | "forgot_password";
 }): Promise<{ message: string; status: "success" | "error" | "pending" }> {
   try {
     const response = await axios.post("/api/user?action=verify-otp", {
       code,
       email,
+      purpose,
     });
 
-    console.log("OtpVerify response:", response);
+    if (response.data.status !== 200) {
+      return { message: response.data.message, status: "error" };
+    }
+
     if (response.data.user === false && response.status === 200) {
       localStorage.setItem("auth_token", response.data.token);
       return { message: "Oops you dont have an account", status: "pending" };
@@ -140,21 +153,48 @@ export async function Register({
   }
 }
 
-export async function GetProfiles(): Promise<{
+export async function GetProfiles({
+  role = "talent",
+  page = 1,
+  limit = 20,
+}: {
+  role?: string;
+  page?: number;
+  limit?: number;
+}): Promise<{
   message: string;
   status: "success" | "error";
   data: HomeUsers[];
+  nextPage: number | null;
 }> {
   try {
-    const response = await axios.get("/api/user?portfolio=random");
+    const response = await axios.get("/api/user", {
+      params: {
+        portfolio: "ordered",
+        role,
+        page,
+        limit,
+      },
+    });
+
     return {
-      message: response.data.message,
+      message: "Profiles fetched successfully",
       status: "success",
-      data: response.data,
+      data: response.data.data || [],
+      nextPage: response.data.nextPage || null,
     };
-  } catch (error) {
-    console.log(error);
-    return { message: "Error Registering", status: "error", data: [] };
+  } catch (error: any) {
+    console.error(
+      "❌ GetProfiles error:",
+      error.response?.data || error.message
+    );
+
+    return {
+      message: error.response?.data?.error || "Error fetching profiles",
+      status: "error",
+      data: [],
+      nextPage: null,
+    };
   }
 }
 
@@ -162,12 +202,13 @@ interface DecodedToken {
   id?: string;
   user: boolean;
   email: string;
+  message?: string;
   exp: number; // expiry timestamp
 }
 
 export async function getCurrentUser(): Promise<{
   user: User | null;
-  status: "success" | "error" | "pending";
+  status: "success" | "error" | "pending" | "change-password";
 }> {
   const token = localStorage.getItem("auth_token");
 
@@ -200,6 +241,9 @@ export async function getCurrentUser(): Promise<{
     });
 
     if (response.data) {
+      if (decoded.message === "password reset pending") {
+        return { user: response.data as User, status: "change-password" };
+      }
       return { user: response.data as User, status: "success" };
     }
 

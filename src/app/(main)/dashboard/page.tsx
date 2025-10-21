@@ -220,20 +220,18 @@ export default function Page() {
           </div>
 
           <div className="flex w-[50%] gap-2">
-            {data?.category === "talent" && (
-              <Button
-                onClick={() =>
-                  setDialog((p) => ({
-                    ...p,
-                    state: true,
-                    value: "upload_pictures",
-                  }))
-                }
-                className="w-full"
-              >
-                <Upload /> Upload Picture
-              </Button>
-            )}
+            <Button
+              onClick={() =>
+                setDialog((p) => ({
+                  ...p,
+                  state: true,
+                  value: "upload_pictures",
+                }))
+              }
+              className="w-full"
+            >
+              <Upload /> Upload Picture
+            </Button>
 
             <Button
               className="w-full flex items-center justify-center gap-2"

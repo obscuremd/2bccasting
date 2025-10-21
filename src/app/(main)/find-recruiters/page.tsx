@@ -16,25 +16,6 @@ import {
 } from "@/components/ui/select";
 
 export default function Page() {
-  const roles = [
-    "Actor",
-    "Model",
-    "Hostess",
-    "Voice Over Artist",
-    "Fashion Designer",
-    "Presenter",
-    "Influencer",
-    "Script Writer",
-    "Movie Producer",
-    "Movie Director",
-    "Graphics Designer",
-    "Web Developer",
-    "Digital Marketer",
-    "Cinematographer",
-    "Event Planner",
-    "Driver",
-  ];
-
   const [data, setData] = useState<HomeUsers[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -56,7 +37,7 @@ export default function Page() {
       const response = await GetProfiles({
         limit: 10,
         page: currentPage,
-        role: "talent",
+        role: "scout",
       });
 
       if (response.status === "success") {
@@ -117,12 +98,13 @@ export default function Page() {
       <div className="w-full flex flex-col items-center px-4 md:px-10 lg:px-20 gap-6">
         <div className="flex flex-col items-center gap-2 text-center">
           <p className="md:text-h3 text-h5 font-semibold">
-            Find The Right Talent, Faster.
+            Find The Right Recruiter, Faster.
           </p>
           <p className="md:text-h5 text-title2 font-medium md:w-[60%] text-secondary-foreground">
-            Easily explore a professional network of Actors, Models, Directors
-            and more for Commercials and Films with powerful search tools to
-            find the right match for your project.
+            Discover a professional network of Recruiters and Casting Agents for
+            Commercials, Films, and Creative Projects — equipped with powerful
+            tools to help you connect with the right professionals for your next
+            opportunity.
           </p>
         </div>
 
@@ -140,23 +122,6 @@ export default function Page() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-            </div>
-
-            {/* Role filter */}
-            <div className="flex flex-col gap-2">
-              <p className="font-medium text-sm text-muted-foreground">Role</p>
-              <Select onValueChange={setRole} value={role}>
-                <SelectTrigger className="w-full border-border focus:ring-2 focus:ring-primary/50">
-                  <SelectValue placeholder="Select role" />
-                </SelectTrigger>
-                <SelectContent>
-                  {roles.map((role, index) => (
-                    <SelectItem key={index} value={role.toLowerCase()}>
-                      {role}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
 
             {/* Sex filter */}

@@ -168,11 +168,14 @@ function NDialog({
   loggedUser: User | null;
 }) {
   const [email, setEmail] = useState(loggedUser?.email || "");
+  const [phoneNumber, setPhoneNumber] = useState(
+    loggedUser?.phone_number || ""
+  );
   const [loading, setLoading] = useState(false);
 
   const handleRequest = async () => {
-    if (!email) {
-      toast.error("Please enter your email address");
+    if (!loggedUser && (!email || !phoneNumber)) {
+      toast.error("Please enter your email and phone number");
       return;
     }
 
@@ -183,18 +186,21 @@ function NDialog({
         to: "support@bccastings.com",
         subject: "Contact Information Request",
         body: `
-          A user has requested the contact information of the model <b>${
+          <p>A user has requested the contact information of the model <b>${
             user.fullname
-          }</b>.<br/><br/>
-          <b>Requester Email:</b> ${email}<br/>
-          <b>Requester Name:</b> ${loggedUser?.fullname || "Guest"}<br/>
-          <b>Requested Profile:</b> ${user.fullname}
+          }</b>.</p>
+          <p><b>Requester Name:</b> ${loggedUser?.fullname || "Guest"}</p>
+          <p><b>Requester Email:</b> ${loggedUser?.email || email}</p>
+          <p><b>Requester Phone Number:</b> ${
+            loggedUser?.phone_number || phoneNumber
+          }</p>
+          <p><b>Requested Profile:</b> ${user.fullname}</p>
         `,
       });
 
       if (res.status === 200) {
         toast.success(
-          "✅ Your request has been received. You will be contacted shortly regarding this model."
+          "✅ Your Request has been Received you will be contacted within 24hrs"
         );
       } else {
         toast.error("❌ Failed to send request. Please try again.");
@@ -212,18 +218,38 @@ function NDialog({
       <DialogHeader>
         <DialogTitle>Contact Info</DialogTitle>
         <DialogDescription>
-          Please input your email and <b>{user.fullname}</b> will contact you
-          shortly.
+          {loggedUser ? (
+            <>
+              Hi <b>{loggedUser.fullname}</b> 👋, we’ll send your request to{" "}
+              <b>{user.fullname}</b>. You’ll receive a response at{" "}
+              <b>{loggedUser.email}</b>.
+            </>
+          ) : (
+            <>
+              Please input your contact details and <b>{user.fullname}</b> will
+              contact you within 24 hours.
+            </>
+          )}
         </DialogDescription>
       </DialogHeader>
 
       {!loggedUser && (
-        <Input
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="mt-3"
-        />
+        <>
+          <Input
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="mt-3"
+            type="email"
+          />
+          <Input
+            placeholder="Enter your phone number"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            className="mt-3"
+            type="tel"
+          />
+        </>
       )}
 
       <Button
@@ -231,7 +257,11 @@ function NDialog({
         disabled={loading}
         className="mt-4 w-full"
       >
-        {loading ? "Sending..." : "Request Contact Info"}
+        {loading
+          ? "Sending..."
+          : loggedUser
+          ? "Send Request"
+          : "Request Contact Info"}
       </Button>
     </DialogContent>
   );

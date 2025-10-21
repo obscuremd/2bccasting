@@ -13,7 +13,7 @@ export default function Header() {
 
   const [auth, setAuth] = useState<{
     user: User | null;
-    status: "success" | "error" | "pending";
+    status: "success" | "error" | "pending" | "change-password";
   }>({ user: null, status: "error" });
 
   useEffect(() => {
@@ -76,6 +76,9 @@ export default function Header() {
           <Link href="/find-talent">
             <Button variant="ghost">Find Talent</Button>
           </Link>
+          <Link href="/find-recruiters">
+            <Button variant="ghost">Find Recruiters</Button>
+          </Link>
           <Link href="/acting-slots">
             <Button variant="ghost">Acting Slots</Button>
           </Link>
@@ -110,6 +113,11 @@ export default function Header() {
           <Link href="/find-talent" onClick={() => setIsOpen(false)}>
             <Button variant="ghost" className="w-full justify-start">
               Find Talent
+            </Button>
+          </Link>
+          <Link href="/find-recruiters" onClick={() => setIsOpen(false)}>
+            <Button variant="ghost" className="w-full justify-start">
+              Find Recruiters
             </Button>
           </Link>
           <Link href="/acting-slots" onClick={() => setIsOpen(false)}>
