@@ -23,6 +23,7 @@ import ImageUploadUi from "@/components/local/ImageUpload";
 import { uploadImages } from "@/lib/UtilServices";
 import { Button } from "@/components/ui/button";
 import LocationSelect from "@/components/local/countryselect";
+import { roles } from "@/lib/Exports";
 
 interface RegisterUser {
   email: string;
@@ -184,25 +185,6 @@ function Content({
       .then((res) => res.json())
       .then((data) => setCountries(data));
   }, []);
-
-  const roles = [
-    "Actor",
-    "Model",
-    "Hostess",
-    "Voice Over Artist",
-    "Fashion Designer",
-    "Presenter",
-    "Influencer",
-    "Script Writer",
-    "Movie Producer",
-    "Movie Director",
-    "Graphics Designer",
-    "Web Developer",
-    "Digital Marketer",
-    "Cinematographer",
-    "Event Planner",
-    "Driver",
-  ];
 
   return (
     <div className="flex gap-2 flex-col md:flex-row">

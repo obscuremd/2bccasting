@@ -14,27 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { roles } from "@/lib/Exports";
 
 export default function Page() {
-  const roles = [
-    "Actor",
-    "Model",
-    "Hostess",
-    "Voice Over Artist",
-    "Fashion Designer",
-    "Presenter",
-    "Influencer",
-    "Script Writer",
-    "Movie Producer",
-    "Movie Director",
-    "Graphics Designer",
-    "Web Developer",
-    "Digital Marketer",
-    "Cinematographer",
-    "Event Planner",
-    "Driver",
-  ];
-
   const [data, setData] = useState<HomeUsers[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
