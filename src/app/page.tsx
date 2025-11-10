@@ -115,7 +115,7 @@ export default function Home() {
           your project or a talent ready to shine, BC Castings is the bridge
           that makes it happen.
         </p>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           {user === null ? (
             <Button variant={"secondary"} onClick={() => router.push("/auth")}>
               ✨Become a Talent
@@ -130,6 +130,23 @@ export default function Home() {
           )}
           <Button onClick={() => router.push("/find-talent")}>
             Find New Talent
+          </Button>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          {user === null ? (
+            <Button variant={"secondary"} onClick={() => router.push("/auth")}>
+              Become a Recruiter
+            </Button>
+          ) : (
+            <Button
+              variant={"secondary"}
+              onClick={() => router.push("/dashboard")}
+            >
+              Go to Dashboard
+            </Button>
+          )}
+          <Button onClick={() => router.push("/find-recruiters")}>
+            Find Recruiters
           </Button>
         </div>
       </div>

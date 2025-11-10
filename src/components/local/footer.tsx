@@ -166,9 +166,11 @@ function SocialIcon({ href, label, bg, hover, children }: any) {
 /* --- Policy Links --- */
 function PolicyLinks() {
   const [open, setOpen] = useState(false);
-  const [doc, setDoc] = useState<"privacy" | "terms" | null>(null);
+  const [doc, setDoc] = useState<"privacy" | "terms" | "PaymentMethods" | null>(
+    null
+  );
 
-  const openDoc = (type: "privacy" | "terms") => {
+  const openDoc = (type: "privacy" | "terms" | "PaymentMethods") => {
     setDoc(type);
     setOpen(true);
   };
@@ -187,12 +189,22 @@ function PolicyLinks() {
       >
         Terms and Conditions
       </p>
+      <p
+        onClick={() => openDoc("PaymentMethods")}
+        className="hover:text-white cursor-pointer transition-colors"
+      >
+        Payment Methods
+      </p>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-3xl h-[80vh] flex flex-col bg-white">
           <DialogHeader>
             <DialogTitle className="text-black">
-              {doc === "privacy" ? "General Policy" : "Terms and Conditions"}
+              {doc === "privacy"
+                ? "General Policy"
+                : doc === "PaymentMethods"
+                ? "Payment Methods"
+                : "Terms and Conditions"}
             </DialogTitle>
           </DialogHeader>
 
@@ -201,6 +213,8 @@ function PolicyLinks() {
             src={
               doc === "privacy"
                 ? "/PrivacyPolicy.pdf"
+                : doc === "PaymentMethods"
+                ? "/PAYMENTS METHOD.pdf"
                 : "/TermsAndConditions.pdf"
             }
             type="application/pdf"

@@ -12,7 +12,7 @@ interface IUserDoc extends Document {
   category: "talent" | "scout";
   date_of_birth: Date;
   role?: string;
-  saved_profiles: string[];
+  flyer: string[];
   portfolio_pictures?: string[];
   cv?: string;
   vip?: boolean;
@@ -33,8 +33,8 @@ const UserSchema = new mongoose.Schema<IUserDoc>(
     location: { type: String, required: true },
     category: { type: String, enum: ["talent", "scout"], required: true },
     date_of_birth: { type: Date, required: true },
-    saved_profiles: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] },
+    flyer: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "Flyer", default: [] },
     ],
     role: { type: String },
     portfolio_pictures: { type: [String], default: [] },
