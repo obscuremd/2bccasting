@@ -27,6 +27,9 @@ export default function Page() {
   const [location, setLocation] = useState("");
   const [profession, setProfession] = useState("");
   const [amountRange, setAmountRange] = useState<[number, number]>([0, 10000]);
+  const [talentType, setTalentType] = useState("");
+  const [education, setEducation] = useState("");
+  const [ageRange, setAgeRange] = useState<[number, number]>([18, 60]);
 
   // Fetch flyers
   async function fetchFlyers(currentPage: number) {

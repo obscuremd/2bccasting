@@ -23,11 +23,37 @@ export async function POST(req: NextRequest) {
       description,
     } = await req.json();
 
+    // ✅ Check user existence
     const user = await User.findById(userId);
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
+    // ✅ Count existing flyers by this user
+    const flyerCount = await Flyer.countDocuments({ userId });
+
+    // 🚫 Enforce posting limits
+    if (!user.vip && flyerCount >= 1) {
+      return NextResponse.json(
+        {
+          message:
+            "Posting limit reached. Upgrade to VIP to create more than one flyer.",
+        },
+        { status: 403 }
+      );
+    }
+
+    if (user.vip && flyerCount >= 3) {
+      return NextResponse.json(
+        {
+          message:
+            "VIP posting limit reached. You can only have up to 3 flyers.",
+        },
+        { status: 403 }
+      );
+    }
+
+    // ✅ Create new flyer
     const newFlyer = await Flyer.create({
       userId,
       flyer_image,

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import CustomCard from "@/components/local/card";
 import LocationSelect from "@/components/local/countryselect";
@@ -830,9 +831,9 @@ function PostFlyerModal({
         toast.error("Failed to post flyer.");
         console.log("error: ", res);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Flyer creation error:", error);
-      toast.error("Unknown error posting flyer.");
+      toast.error(error.message || "Unknown error posting flyer.");
     } finally {
       setLoading(false);
     }

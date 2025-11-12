@@ -37,6 +37,22 @@ export default function Page() {
     getUser();
   }, [router]);
 
+  const vipPerks =
+    user?.category === "talent"
+      ? [
+          "Topping the rank on the website category chat.",
+          "Your Business number and Email will be seen by prospects",
+          "Get Premium insight from potential recruiters",
+          "Prospective Recruiter will contact you Directly",
+          "No Agency Slashing your money or pay check",
+          "You get to keep 100% of your income",
+        ]
+      : [
+          "Post up to 3 image",
+          "Email and phone will show on the website interview ",
+          "Have Up to 3 flyers",
+        ];
+
   const plans = [
     {
       title: "Basic Plan",
@@ -76,14 +92,7 @@ export default function Page() {
 
       {/* Features */}
       <div className="flex flex-col gap-10">
-        {[
-          "Topping the rank on the website category chat.",
-          "Your Business number and Email will be seen by prospects",
-          "Get Premium insight from potential recruiters",
-          "Prospective Recruiter will contact you Directly",
-          "No Agency Slashing your money or pay check",
-          "You get to keep 100% of your income",
-        ].map((text, i) => (
+        {vipPerks.map((text, i) => (
           <p key={i} className="text-h5 font-medium flex gap-4 items-center">
             <ArrowUp />
             {text}
