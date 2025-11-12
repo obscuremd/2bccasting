@@ -37,28 +37,18 @@ export async function GET(req: NextRequest) {
   const id = searchParams.get("id");
   const fullname = searchParams.get("fullname");
   const portfolio = searchParams.get("portfolio");
-  const saved = searchParams.get("saved");
   const role = searchParams.get("role") || "talent";
   const page = parseInt(searchParams.get("page") || "1", 10);
   const limit = parseInt(searchParams.get("limit") || "20", 10);
 
   try {
     // Get by ID
-    if (id && !saved) {
-      const user = await User.findById(id).populate("saved_profiles");
+    if (id) {
+      const user = await User.findById(id);
       if (!user) {
         return NextResponse.json({ error: "User not found" }, { status: 404 });
       }
       return NextResponse.json(user, { status: 200 });
-    }
-
-    // Get saved profiles
-    if (id && saved === "true") {
-      const user = await User.findById(id).populate("saved_profiles");
-      if (!user) {
-        return NextResponse.json({ error: "User not found" }, { status: 404 });
-      }
-      return NextResponse.json(user.saved_profiles, { status: 200 });
     }
 
     // Search by fullname
@@ -139,9 +129,6 @@ export async function PUT(req: NextRequest) {
       portfolio_pictures_add, // pictures to add
       portfolio_pictures_remove, // pictures to remove
       portfolio_pictures_replace, // replace full array
-      saved_profiles_add, // saved profiles to add
-      saved_profiles_remove, // saved profiles to remove
-      saved_profiles_replace, // replace saved profiles array
       password,
       ...updates
     } = body;
@@ -177,33 +164,6 @@ export async function PUT(req: NextRequest) {
       updateQuery.$pull = {
         ...(updateQuery.$pull as object),
         portfolio_pictures: { $in: portfolio_pictures_remove },
-      };
-    }
-
-    /** ---------------- Saved Profiles ---------------- **/
-    // Replace the entire saved_profiles array
-    if (saved_profiles_replace) {
-      updateQuery.$set = {
-        ...(typeof updateQuery.$set === "object" && updateQuery.$set !== null
-          ? updateQuery.$set
-          : {}),
-        saved_profiles: saved_profiles_replace,
-      };
-    }
-
-    // Add new saved profiles
-    if (saved_profiles_add && saved_profiles_add.length > 0) {
-      updateQuery.$push = {
-        ...(updateQuery.$push as object),
-        saved_profiles: { $each: saved_profiles_add },
-      };
-    }
-
-    // Remove specific saved profiles
-    if (saved_profiles_remove && saved_profiles_remove.length > 0) {
-      updateQuery.$pull = {
-        ...(updateQuery.$pull as object),
-        saved_profiles: { $in: saved_profiles_remove },
       };
     }
 

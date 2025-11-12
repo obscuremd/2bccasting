@@ -22,6 +22,22 @@ interface RegisterData {
   date_of_birth: string;
 }
 
+interface Flyer {
+  _id: string;
+  userId: string;
+  flyer_image?: string;
+  company_name: string;
+  profession: string;
+  skills: string;
+  education: string;
+  gender: "male" | "female";
+  location: string;
+  project_begin: Date;
+  project_end: Date;
+  amount?: string;
+  description?: string[];
+}
+
 // types/User.ts
 
 interface User {
@@ -37,7 +53,7 @@ interface User {
   category: "talent" | "scout";
   date_of_birth: Date;
 
-  saved_profiles: [];
+  flyer?: Flyer[];
 
   // Talent-specific fields
   role?: string;

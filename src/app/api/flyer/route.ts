@@ -64,6 +64,7 @@ export async function GET(req: NextRequest) {
     const type = params.get("type");
     const id = params.get("id");
 
+    // ✅ Fetch all flyers
     if (type === "all") {
       const data = await Flyer.find();
       return NextResponse.json(
@@ -72,6 +73,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    // ✅ Fetch flyers for a specific user
     if (type === "user") {
       if (!id) {
         return NextResponse.json(
@@ -79,7 +81,6 @@ export async function GET(req: NextRequest) {
           { status: 400 }
         );
       }
-
       const data = await Flyer.find({ userId: id });
       return NextResponse.json(
         { message: "Flyers fetched", data },
@@ -87,8 +88,31 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    // ✅ Fetch a single flyer by ID
+    if (type === "single") {
+      if (!id) {
+        return NextResponse.json(
+          { message: "Flyer ID is required when type=single" },
+          { status: 400 }
+        );
+      }
+
+      const flyer = await Flyer.findById(id);
+      if (!flyer) {
+        return NextResponse.json(
+          { message: "Flyer not found" },
+          { status: 404 }
+        );
+      }
+
+      return NextResponse.json(
+        { message: "Flyer fetched", flyer },
+        { status: 200 }
+      );
+    }
+
     return NextResponse.json(
-      { message: "Invalid request. Valid types: all, user" },
+      { message: "Invalid request. Valid types: all, user, single" },
       { status: 400 }
     );
   } catch (error: any) {

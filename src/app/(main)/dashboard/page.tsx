@@ -53,6 +53,8 @@ export default function Page() {
   const [data, setData] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false); // dialog control
+  const [images, setImages] = useState<string[]>([]);
+  const [flyers, setFlyers] = useState<Flyer[]>([]);
 
   const [profileUpdateLoading, setProfileUpdateLoading] = useState(false);
 
@@ -74,12 +76,27 @@ export default function Page() {
           return;
         }
         setData(response.user);
+        console.log("role:", response.user.role);
       } finally {
         setLoading(false);
       }
     }
     GetUser();
   }, []);
+
+  useEffect(() => {
+    if (data?.category === "talent") {
+      setImages(data.portfolio_pictures || []);
+    } else {
+      async function getFlyers() {
+        const res = await axios.get<{ data: Flyer[] }>(
+          `/api/flyer?type=user&id=${data?._id}`
+        );
+        setFlyers(res.data.data);
+      }
+      getFlyers();
+    }
+  }, [data]);
 
   function Logout() {
     localStorage.removeItem("auth_token");
@@ -113,9 +130,6 @@ export default function Page() {
     }
   }
 
-  const images =
-    data?.category === "scout" ? data.saved_profiles : data?.portfolio_pictures;
-
   if (loading) {
     return <p className="text-center mt-8">Loading...</p>;
   }
@@ -131,6 +145,9 @@ export default function Page() {
       >
         {dialog.value === "upload_pictures" && (
           <UploadImage data={data} setUser={setData} setModal={setDialog} />
+        )}
+        {dialog.value === "post_flyer" && (
+          <PostFlyerModal data={data} setUser={setData} setModal={setDialog} />
         )}
         {dialog.value === "delete_profile" && data != null && (
           <DeleteModal data={data} setModal={setDialog} />
@@ -166,7 +183,7 @@ export default function Page() {
               </div>
             </div>
             <p className="capitalize text-title1 font-semibold">
-              {data?.category === "scout" ? data.role : data?.category}
+              {data?.category === "scout" ? "Recruiter" : data?.role}
             </p>
             <p>{data?.bio}</p>
           </div>
@@ -225,12 +242,16 @@ export default function Page() {
                 setDialog((p) => ({
                   ...p,
                   state: true,
-                  value: "upload_pictures",
+                  value:
+                    data?.category === "scout"
+                      ? "post_flyer"
+                      : "upload_pictures",
                 }))
               }
               className="w-full"
             >
-              <Upload /> Upload Picture
+              <Upload />
+              {data?.category === "talent" ? "Upload Picture" : "Post Flyer"}
             </Button>
 
             <Button
@@ -275,20 +296,38 @@ export default function Page() {
         </div>
       </div>
 
-      <div className="flex gap-2.5 items-center w-full">
-        <hr className="w-[100px] md:w-[244px] bg-foreground" />
-
+      {/* ✅ Portfolio / Flyers */}
+      <div className="flex items-center gap-2 mt-10 w-full">
+        <hr className="flex-1 border-gray-400" />
         <p className="text-h3 font-semibold">
-          Portfolio ({data?.portfolio_pictures.length}){" "}
+          {data?.category === "talent"
+            ? `Portfolio (${images.length})`
+            : `Flyers (${flyers.length})`}
         </p>
+        <hr className="flex-1 border-gray-400" />
       </div>
 
-      {/* Talent Cards */}
-      <div className="columns-1 sm:columns-2 lg:columns-5 gap-6">
-        {images && images.length > 0 ? (
-          images.map((pic, i) => <CustomCard key={i} image={pic} profile />)
+      {/* ✅ Cards Section */}
+      <div className="columns-1 sm:columns-2 lg:columns-5 gap-6 w-full">
+        {data?.category === "talent" ? (
+          images.length > 0 ? (
+            images.map((pic, i) => (
+              <CustomCard key={i} image={pic} profile={true} />
+            ))
+          ) : (
+            <p>No Portfolio Pictures</p>
+          )
+        ) : flyers.length > 0 ? (
+          flyers.map((f, i) => (
+            <CustomCard
+              key={i}
+              image={f.flyer_image}
+              primary_text={f.profession}
+              secondary_text={f.company_name}
+            />
+          ))
         ) : (
-          <p>No Portfolio Pictures</p>
+          <p>No Flyers Yet</p>
         )}
       </div>
     </div>
@@ -694,6 +733,229 @@ function DeleteModal({
           )}
         </Button>
       </div>
+    </DialogContent>
+  );
+}
+
+function PostFlyerModal({
+  data,
+  setUser,
+  setModal,
+}: {
+  data: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  setModal: React.Dispatch<
+    React.SetStateAction<{ state: boolean; value: string }>
+  >;
+}) {
+  const [flyerData, setFlyerData] = useState({
+    flyer_image: null as File | null,
+    company_name: "",
+    profession: "",
+    skills: "",
+    education: "",
+    gender: "",
+    location: "",
+    project_begin: new Date(),
+    project_end: new Date(),
+    amount: "",
+    description: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!data) return;
+    const {
+      flyer_image,
+      company_name,
+      profession,
+      skills,
+      education,
+      gender,
+      location,
+      project_begin,
+      project_end,
+      amount,
+      description,
+    } = flyerData;
+
+    if (
+      !flyer_image ||
+      !company_name ||
+      !profession ||
+      !skills ||
+      !education ||
+      !gender ||
+      !location
+    ) {
+      toast.error("Please fill all required fields.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Upload flyer image first
+      const uploaded = await uploadImages([flyer_image]);
+      if (uploaded.message !== "success") {
+        toast.error("Image upload failed.");
+        setLoading(false);
+        return;
+      }
+
+      const flyerImgUrl = uploaded.data[0];
+
+      // Post flyer to backend
+      const res = await axios.post("/api/flyer", {
+        userId: data._id,
+        flyer_image: flyerImgUrl,
+        company_name,
+        profession,
+        skills,
+        education,
+        gender,
+        location,
+        project_begin,
+        project_end,
+        amount,
+        description,
+      });
+
+      if (res.status === 201) {
+        toast.success("Flyer posted successfully!");
+        const updatedUser = await getCurrentUser();
+        setUser(updatedUser.user);
+        setModal({ state: false, value: "" });
+      } else {
+        toast.error("Failed to post flyer.");
+        console.log("error: ", res);
+      }
+    } catch (error) {
+      console.error("Flyer creation error:", error);
+      toast.error("Unknown error posting flyer.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <DialogContent className="flex flex-col gap-8 max-h-[90vh] overflow-y-auto">
+      <DialogHeader className="flex flex-col items-center">
+        <DialogTitle>Post a New Flyer</DialogTitle>
+        <DialogDescription>
+          Create and share a flyer for your company’s next casting or project.
+        </DialogDescription>
+      </DialogHeader>
+
+      <div className="flex flex-col gap-4">
+        {/* Image Upload */}
+        <Label>Flyer Image</Label>
+        <ImageUploadUi
+          file={flyerData.flyer_image}
+          setFile={(file) =>
+            setFlyerData((p) => ({
+              ...p,
+              flyer_image: file as File | null, // ✅ explicit cast
+            }))
+          }
+        />
+
+        <Input
+          placeholder="Company Name *"
+          value={flyerData.company_name}
+          onChange={(e) =>
+            setFlyerData((p) => ({ ...p, company_name: e.target.value }))
+          }
+        />
+        <Input
+          placeholder="Profession (e.g. Model, Actor, Dancer) *"
+          value={flyerData.profession}
+          onChange={(e) =>
+            setFlyerData((p) => ({ ...p, profession: e.target.value }))
+          }
+        />
+        <Input
+          placeholder="Skills (comma-separated) *"
+          value={flyerData.skills}
+          onChange={(e) =>
+            setFlyerData((p) => ({ ...p, skills: e.target.value }))
+          }
+        />
+        <Input
+          placeholder="Education Level *"
+          value={flyerData.education}
+          onChange={(e) =>
+            setFlyerData((p) => ({ ...p, education: e.target.value }))
+          }
+        />
+        <div>
+          <Label>Gender</Label>
+          <select
+            className="border border-gray-300 rounded-md p-2 w-full"
+            value={flyerData.gender}
+            onChange={(e) =>
+              setFlyerData((p) => ({ ...p, gender: e.target.value }))
+            }
+          >
+            <option value="">Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+        <LocationSelect
+          value={flyerData.location}
+          onChange={(val) => setFlyerData((p) => ({ ...p, location: val }))}
+        />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <DatePicker
+            date={flyerData.project_begin}
+            setDate={(val) =>
+              setFlyerData((p) => ({
+                ...p,
+                project_begin: (val as Date) || new Date(), // ✅ explicit cast
+              }))
+            }
+          />
+
+          <DatePicker
+            date={flyerData.project_end}
+            setDate={(val) =>
+              setFlyerData((p) => ({
+                ...p,
+                project_end: (val as Date) || new Date(), // ✅ explicit cast
+              }))
+            }
+          />
+        </div>
+        <Input
+          placeholder="Amount (optional)"
+          value={flyerData.amount}
+          onChange={(e) =>
+            setFlyerData((p) => ({ ...p, amount: e.target.value }))
+          }
+        />
+        <Textarea
+          placeholder="Description (optional)"
+          value={flyerData.description}
+          onChange={(e) =>
+            setFlyerData((p) => ({ ...p, description: e.target.value }))
+          }
+        />
+      </div>
+
+      <Button
+        onClick={handleSubmit}
+        disabled={loading}
+        className="w-full flex items-center justify-center gap-2"
+      >
+        {loading ? (
+          <>
+            <Loader2Icon className="animate-spin" /> Posting...
+          </>
+        ) : (
+          "Post Flyer"
+        )}
+      </Button>
     </DialogContent>
   );
 }
