@@ -26,10 +26,9 @@ export default function Page() {
   const [sex, setSex] = useState("");
   const [location, setLocation] = useState("");
   const [profession, setProfession] = useState("");
-  const [amountRange, setAmountRange] = useState<[number, number]>([0, 10000]);
-  const [talentType, setTalentType] = useState("");
-  const [education, setEducation] = useState("");
-  const [ageRange, setAgeRange] = useState<[number, number]>([18, 60]);
+  const [amountRange, setAmountRange] = useState<[number, number]>([
+    0, 100000000000,
+  ]);
 
   // Fetch flyers
   async function fetchFlyers(currentPage: number) {
@@ -166,7 +165,7 @@ export default function Page() {
               </p>
               <Slider
                 min={0}
-                max={10000}
+                max={100000000000}
                 step={100}
                 value={amountRange}
                 onValueChange={(v) =>
