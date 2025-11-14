@@ -197,7 +197,7 @@ function PolicyLinks() {
       </p>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-3xl h-[80vh] flex flex-col bg-white">
+        <DialogContent className="max-w-3xl h-[80vh] flex flex-col bg-white overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-black">
               {doc === "privacy"
@@ -209,15 +209,14 @@ function PolicyLinks() {
           </DialogHeader>
 
           {/* Render PDF inline */}
-          <embed
+          <img
             src={
               doc === "privacy"
-                ? "/PrivacyPolicy.pdf"
+                ? "/PrivacyYPolicy.jpg"
                 : doc === "PaymentMethods"
-                ? "/PAYMENTS METHOD.pdf"
-                : "/TermsAndConditions.pdf"
+                ? "/payementmethods.jpg"
+                : "/termsandcondition.jpg"
             }
-            type="application/pdf"
             className="flex-1 w-full rounded-md border border-gray-200"
           />
         </DialogContent>

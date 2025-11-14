@@ -908,35 +908,51 @@ function PostFlyerModal({
           onChange={(val) => setFlyerData((p) => ({ ...p, location: val }))}
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <DatePicker
-            date={flyerData.project_begin}
-            setDate={(val) =>
-              setFlyerData((p) => ({
-                ...p,
-                project_begin: (val as Date) || new Date(), // ✅ explicit cast
-              }))
-            }
-          />
+          <div className="flex flex-col gap-1">
+            <Label>Project Begin</Label>
+            <DatePicker
+              date={flyerData.project_begin}
+              setDate={(val) =>
+                setFlyerData((p) => ({
+                  ...p,
+                  project_begin: (val as Date) || new Date(), // ✅ explicit cast
+                }))
+              }
+            />
+          </div>
 
-          <DatePicker
-            date={flyerData.project_end}
-            setDate={(val) =>
-              setFlyerData((p) => ({
-                ...p,
-                project_end: (val as Date) || new Date(), // ✅ explicit cast
-              }))
-            }
-          />
+          <div className="flex flex-col gap-1">
+            <Label>Deadline</Label>
+
+            <DatePicker
+              date={flyerData.project_end}
+              setDate={(val) =>
+                setFlyerData((p) => ({
+                  ...p,
+                  project_end: (val as Date) || new Date(), // ✅ explicit cast
+                }))
+              }
+            />
+          </div>
         </div>
         <Input
-          placeholder="Amount (optional)"
+          type="number"
+          placeholder="Amount"
+          max={999999999}
           value={flyerData.amount}
-          onChange={(e) =>
-            setFlyerData((p) => ({ ...p, amount: e.target.value }))
-          }
+          onChange={(e) => {
+            const value = e.target.value;
+
+            // Prevent numbers beyond 999,999,999
+            if (Number(value) > 999999999) return;
+
+            // Always store as string
+            setFlyerData((p) => ({ ...p, amount: value.toString() }));
+          }}
         />
+
         <Textarea
-          placeholder="Description (optional)"
+          placeholder="Description"
           value={flyerData.description}
           onChange={(e) =>
             setFlyerData((p) => ({ ...p, description: e.target.value }))

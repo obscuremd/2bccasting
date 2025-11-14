@@ -8,6 +8,7 @@ interface Props {
   secondary_text?: string;
   category?: string;
   profile?: boolean; // if true → fixed card size, no hover overlay
+  bottom?: boolean; // if true → fixed card size, no hover overlay
 }
 
 export default function CustomCard({
@@ -16,6 +17,7 @@ export default function CustomCard({
   secondary_text,
   category,
   profile = false,
+  bottom = false,
 }: Props) {
   const [visible, setVisible] = useState(false);
 
@@ -38,22 +40,38 @@ export default function CustomCard({
         }`}
         transition={{ duration: 0.6, ease: "easeInOut" }}
       />
+      {/* If bottom=true → show static bottom text (no animation) */}
+      {bottom && (
+        <div
+          className="absolute bottom-0 left-0 w-full p-4 
+               bg-[linear-gradient(180deg,rgba(255,255,255,0)_-40.42%,#7F7F81_198.33%)]
+               backdrop-blur-[8.5px] text-white"
+        >
+          <p className="text-title2 font-bold">{primary_text}</p>
+          <p className="text-body font-medium">{secondary_text}</p>
+          <p className="text-body font-medium whitespace-pre-line">
+            {category}
+          </p>
+        </div>
+      )}
 
-      {/* Only show overlay in non-profile mode */}
+      {/* Only show animated overlay in non-profile & non-bottom modes */}
       <AnimatePresence>
-        {!profile && visible && (
+        {!bottom && !profile && visible && (
           <motion.div
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 50, opacity: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="absolute bottom-0 left-0 w-full p-4 
-                       bg-[linear-gradient(180deg,rgba(255,255,255,0)_-40.42%,#7F7F81_198.33%)]
-                       backdrop-blur-[8.5px] text-white"
+                 bg-[linear-gradient(180deg,rgba(255,255,255,0)_-40.42%,#7F7F81_198.33%)]
+                 backdrop-blur-[8.5px] text-white"
           >
             <p className="text-title2 font-bold">{primary_text}</p>
-            <p className="text-body font-medium">Age: {secondary_text}</p>
-            <p className="text-body font-medium">{category}</p>
+            <p className="text-body font-medium">{secondary_text}</p>
+            <p className="text-body font-medium whitespace-pre-line">
+              {category}
+            </p>
           </motion.div>
         )}
       </AnimatePresence>

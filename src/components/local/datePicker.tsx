@@ -31,6 +31,8 @@ export function DatePicker({
         <Calendar
           mode="single"
           selected={date}
+          fromYear={1700}
+          toYear={2100}
           captionLayout="dropdown"
           onSelect={(date) => {
             setDate(date);

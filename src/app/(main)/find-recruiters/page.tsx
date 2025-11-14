@@ -27,7 +27,7 @@ export default function Page() {
   const [location, setLocation] = useState("");
   const [profession, setProfession] = useState("");
   const [amountRange, setAmountRange] = useState<[number, number]>([
-    0, 100000000000,
+    0, 999999999,
   ]);
 
   // Fetch flyers
@@ -165,7 +165,7 @@ export default function Page() {
               </p>
               <Slider
                 min={0}
-                max={100000000000}
+                max={999999999}
                 step={100}
                 value={amountRange}
                 onValueChange={(v) =>
@@ -210,8 +210,9 @@ export default function Page() {
             <CustomCard
               primary_text={flyer.profession}
               secondary_text={flyer.company_name}
-              category={flyer.location}
+              category={` ${flyer.location}\n${flyer.amount} `}
               image={flyer.flyer_image}
+              bottom
             />
           </Link>
         ))}
