@@ -94,9 +94,10 @@ export default function Page() {
             Find the Right Opportunity Faster.
           </p>
           <p className="md:text-h5 text-title2 font-medium md:w-[60%] text-secondary-foreground">
-            Browse a growing network of professional recruiters and casting
-            agents. Discover projects, gigs, and opportunities that match your
-            skillset.
+            Unique Opportunity to find Temporary Employment, Contractors, Movie
+            Directors, Freelancers, Talent Hunters, Part time jobs. Contains
+            Free Analysis proposal, price quotation and project timeline.Find
+            your Skillset Match.
           </p>
         </div>
 
@@ -109,7 +110,7 @@ export default function Page() {
                 Search
               </p>
               <Input
-                placeholder="Search by company, profession, or skill..."
+                placeholder="Company Name"
                 className="w-full border-border focus:ring-2 focus:ring-primary/50"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -161,7 +162,7 @@ export default function Page() {
             {/* Amount Range filter */}
             <div className="flex flex-col gap-2 col-span-1 md:col-span-2">
               <p className="font-medium text-sm text-muted-foreground">
-                Project Budget (₦)
+                Quotation (₦)
               </p>
               <Slider
                 min={0}

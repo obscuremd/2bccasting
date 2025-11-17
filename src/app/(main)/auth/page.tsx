@@ -118,8 +118,9 @@ export default function Page() {
             Unlock opportunities. Join the stage.
           </p>
           <p className="text-title2 font-medium text-center">
-            ✨ Join BC Casting to connect with recruiters, discover
-            opportunities, and showcase your talent—all in one place.
+            Advertise with us, we support Employers, HR and Talent Seekers to
+            find the best candidate for their project. Benefit by posting
+            commercial flyers. Become a VIP and publish your contacts. Apply Now
           </p>
         </div>
         <Input
