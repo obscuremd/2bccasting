@@ -15,8 +15,35 @@ export default function Home() {
   const router = useRouter();
 
   const [data, setData] = useState<string[]>([]);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    async function getFeed() {
+      setLoading(true);
+      try {
+        const response = await GetProfiles({
+          limit: 10,
+          page: 1,
+          role: "talent",
+        });
+        if (response.status === "success") {
+          // extract only pictures into images
+          const pics = response.data.map((user: HomeUsers) => user.picture);
+
+          setData(pics);
+          console.log("Pictures:", response.data);
+        } else {
+          toast.error(response.message);
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    getFeed();
+  }, []);
 
   useEffect(() => {
     async function getUser() {
@@ -28,7 +55,6 @@ export default function Home() {
         setLoading(false);
       }
     }
-
     async function getFeed() {
       setLoading(true);
       try {
@@ -38,14 +64,12 @@ export default function Home() {
           role: "talent",
         });
         if (response.status === "success") {
-          // extract only pictures into images
-          const pics = response.data
-            .map((user: HomeUsers) => user.picture)
-            .filter((pic: string | undefined) => !!pic) // remove null/undefined
-            .slice(0, 10); // only keep first 10
-
+          const pics = response.data.map((user: HomeUsers) => user.picture);
           setData(pics);
-          console.log("Pictures:", pics);
+
+          // Wait for all images to load
+          await preloadImages(pics);
+          setImagesLoaded(true);
         } else {
           toast.error(response.message);
         }
@@ -58,7 +82,7 @@ export default function Home() {
     getFeed();
   }, []);
 
-  if (loading) {
+  if (loading || imagesLoaded) {
     return <div>...Loading</div>;
   }
 
