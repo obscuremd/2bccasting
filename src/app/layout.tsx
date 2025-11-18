@@ -7,6 +7,7 @@ import Particles from "@/components/local/Particles";
 import { Toaster } from "react-hot-toast";
 import { app } from "@/lib/firebaseConfig";
 import { Footer } from "@/components/local/footer";
+import { Whatsapp } from "iconoir-react";
 app;
 // Load Bai Jamjuree font
 const baiJamjuree = Bai_Jamjuree({
@@ -70,6 +71,16 @@ export default function RootLayout({
               disableRotation={false}
             />
           </div>
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={"WhatsApp"}
+            href="https://wa.me/2347047777561"
+            className={`fixed bottom-3 right-3 z-50 h-10 w-fit p-2 rounded-full flex gap-2 text-sm backdrop-blur-xl items-center justify-center bg-[#25D366]/10 hover:bg-[#25D366]/20 transition-all duration-200 hover:scale-105`}
+          >
+            <Whatsapp className="h-5 w-5 text-[#25D366]" />
+            Chat with us
+          </a>
           <div className="z-10 md:p-16 md:pt-0 p-2 pt-4">{children}</div>
           <Footer />
         </ThemeProvider>
