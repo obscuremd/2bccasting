@@ -101,7 +101,7 @@ export default function Page() {
       </div>
 
       {/* Pricing */}
-      <div className="flex gap-6">
+      <div className="flex gap-6 w-[90%] overflow-x-scroll">
         {plans.map((p, i) => (
           <button key={i} onClick={() => setPlan(i)}>
             <PricingCard
