@@ -148,9 +148,10 @@ export default function Page() {
           />
           <Button
             variant={"secondary"}
-            size={"icon"}
+            size={"sm"}
             onClick={() => setPasswordVisible(!passwordVisible)}
           >
+            {passwordVisible ? "Hide" : "Show"}
             {passwordVisible ? <Eye /> : <EyeClosed />}
           </Button>
         </div>
