@@ -15,7 +15,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Auth, OtpVerify } from "@/lib/ApiService";
-import { Loader2Icon } from "lucide-react";
+import { Eye, EyeClosed, Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useState } from "react";
@@ -29,6 +29,8 @@ export default function Page() {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false); // dialog control
+
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   async function Authenticate() {
     setLoading(true);
@@ -71,7 +73,14 @@ export default function Page() {
   return (
     <div className="flex md:flex-row flex-col md:gap-2.5">
       {/* Success Dialog */}
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog
+        open={isOpen}
+        onOpenChange={(open) => {
+          if (!open) return; // Prevent closing when clicking outside
+          setIsOpen(open);
+        }}
+        modal={true}
+      >
         <DialogContent className="flex flex-col gap-10">
           <DialogHeader>
             <DialogTitle>Otp Verification</DialogTitle>
@@ -129,13 +138,22 @@ export default function Page() {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <Input
-          placeholder="Password"
-          type="password"
-          className="w-full"
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        <div className="flex gap-2 w-full">
+          <Input
+            placeholder="Password"
+            type={passwordVisible ? "text" : "password"}
+            className="w-full"
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <Button
+            variant={"secondary"}
+            size={"icon"}
+            onClick={() => setPasswordVisible(!passwordVisible)}
+          >
+            {passwordVisible ? <Eye /> : <EyeClosed />}
+          </Button>
+        </div>
         <Link
           className="self-start my-[-10px] cursor-pointer"
           href={"/auth/forgot-password"}

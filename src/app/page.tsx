@@ -15,74 +15,43 @@ export default function Home() {
   const router = useRouter();
 
   const [data, setData] = useState<string[]>([]);
-  const [imagesLoaded, setImagesLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    async function getFeed() {
+    async function init() {
       setLoading(true);
+
       try {
-        const response = await GetProfiles({
+        // Fetch user
+        const userResponse = await getCurrentUser();
+        setUser(userResponse.user);
+
+        // Fetch profiles
+        const feedResponse = await GetProfiles({
           limit: 10,
           page: 1,
           role: "talent",
         });
-        if (response.status === "success") {
-          // extract only pictures into images
-          const pics = response.data.map((user: HomeUsers) => user.picture);
 
+        if (feedResponse.status === "success") {
+          const pics = feedResponse.data.map((user: HomeUsers) => user.picture);
           setData(pics);
-          console.log("Pictures:", response.data);
         } else {
-          toast.error(response.message);
+          toast.error(feedResponse.message);
         }
+      } catch (error) {
+        console.error("error:", error);
+        toast.error("Something went wrong loading your feed");
       } finally {
         setLoading(false);
       }
     }
 
-    getFeed();
+    init();
   }, []);
 
-  useEffect(() => {
-    async function getUser() {
-      setLoading(true);
-      try {
-        const response = await getCurrentUser();
-        setUser(response.user);
-      } finally {
-        setLoading(false);
-      }
-    }
-    async function getFeed() {
-      setLoading(true);
-      try {
-        const response = await GetProfiles({
-          limit: 10,
-          page: 1,
-          role: "talent",
-        });
-        if (response.status === "success") {
-          const pics = response.data.map((user: HomeUsers) => user.picture);
-          setData(pics);
-
-          // Wait for all images to load
-          await preloadImages(pics);
-          setImagesLoaded(true);
-        } else {
-          toast.error(response.message);
-        }
-      } finally {
-        setLoading(false);
-      }
-    }
-    getUser();
-
-    getFeed();
-  }, []);
-
-  if (loading || imagesLoaded) {
+  if (loading) {
     return <div>...Loading</div>;
   }
 
