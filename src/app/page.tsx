@@ -52,7 +52,17 @@ export default function Home() {
   }, []);
 
   if (loading) {
-    return <div>...Loading</div>;
+    return (
+      <div className="w-full flex flex-col justify-center items-center gap-10 p-20">
+        <img src={"/Logo.svg"} className="w-52" />
+        <MButton
+          borderRadius="1.75rem"
+          className="bg-background text-[#ffe299] border-neutral-200 dark:border-[#ffe2994e] "
+        >
+          Loading . . .
+        </MButton>
+      </div>
+    );
   }
 
   return (
