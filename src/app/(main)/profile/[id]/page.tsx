@@ -195,6 +195,8 @@ function NDialog({
             loggedUser?.phone_number || phoneNumber
           }</p>
           <p><b>Requested Profile:</b> ${user.fullname}</p>
+          <p><b>Requested Email:</b> ${user.email}</p>
+          <p><b>Requested Phone Number:</b> ${user.phone_number}</p>
         `,
       });
 
