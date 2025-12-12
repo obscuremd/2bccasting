@@ -73,7 +73,7 @@ export function Footer() {
                   href="mailto:support@bccastings.com"
                   className="hover:text-white transition-colors"
                 >
-                  Support@bccastings.com
+                  nigeriacasting@gmail.com
                 </a>
               </div>
             </div>

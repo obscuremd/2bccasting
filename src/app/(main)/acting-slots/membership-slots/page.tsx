@@ -95,7 +95,7 @@ export default function MembershipPage() {
       setMessage("");
       // Send the email via your backend
       const res = await axios.post("/api/email", {
-        to: "support@bccastings.com", // Your Titan domain email
+        to: "nigeriacasting@gmail.com ", // Your Titan domain email
         subject: "Membership Payment Proof",
         body: `
           A new membership payment was submitted:<br/><br/>
@@ -228,10 +228,10 @@ export default function MembershipPage() {
                 <div className="flex items-center gap-2 text-sm">
                   <Mail size={16} />
                   <a
-                    href="mailto:Support@bccastings.com"
+                    href="mailto:nigeriacasting@gmail.com "
                     className="underline break-all"
                   >
-                    Support@bccastings.com
+                    nigeriacasting@gmail.com
                   </a>
                 </div>
                 <div className="flex items-center gap-2 text-sm mt-2">

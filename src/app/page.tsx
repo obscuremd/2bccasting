@@ -250,7 +250,7 @@ function ContactUsForm() {
       `;
 
       const res = await axios.post("/api/email", {
-        to: "support@bccastings.com",
+        to: "nigeriacasting@gmail.com ",
         subject: "🎥 New Casting Project Inquiry",
         body,
       });
@@ -288,7 +288,7 @@ function ContactUsForm() {
           Are you looking for suitable cast for your project in Commercials or
           Films? We collaborate with Local and International Clients. Fill the
           form below or email{" "}
-          <span className="font-semibold">support@bccastings.com</span>.
+          <span className="font-semibold">nigeriacasting@gmail.com </span>.
         </p>
       </div>
 

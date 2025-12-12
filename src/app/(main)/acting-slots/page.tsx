@@ -78,7 +78,7 @@ export default function Page() {
       setMessage("");
 
       const res = await axios.post("/api/email", {
-        to: "support@bccastings.com", // your Titan domain email
+        to: "nigeriacasting@gmail.com ", // your Titan domain email
         subject: "Acting Slots Payment Confirmation",
         body: `
           A payment was made by <b>${form.name}</b>.<br/>
@@ -226,7 +226,7 @@ export default function Page() {
                     href="mailto:Support@bccastings.com"
                     className="underline break-all"
                   >
-                    Support@bccastings.com
+                    nigeriacasting@gmail.com
                   </a>
                 </div>
                 <div className="flex items-center gap-2 text-sm mt-2">
@@ -340,7 +340,7 @@ export default function Page() {
       <footer className="mt-10 text-sm text-muted-foreground">
         <p>
           Loss of passcode: $10 | For more details contact
-          Support@bccastings.com or WhatsApp +2347047777561
+          nigeriacasting@gmail.com or WhatsApp +2347047777561
         </p>
       </footer>
     </div>
