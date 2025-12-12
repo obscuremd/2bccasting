@@ -44,6 +44,7 @@ import {
   Loader2Icon,
   Trash,
   Upload,
+  X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -56,6 +57,10 @@ export default function Page() {
   const [isOpen, setIsOpen] = useState(false); // dialog control
   const [images, setImages] = useState<string[]>([]);
   const [flyers, setFlyers] = useState<Flyer[]>([]);
+
+  const [id, setId] = useState("");
+  const [selectedFlyerId, setSelectedFlyerId] = useState("");
+  const [selectedFlyerImage, setSelectedFlyerImage] = useState("");
 
   const [profileUpdateLoading, setProfileUpdateLoading] = useState(false);
 
@@ -130,6 +135,10 @@ export default function Page() {
       setProfileUpdateLoading(false);
     }
   }
+  async function loadFlyers() {
+    const res = await axios.get(`/api/flyer?type=user&id=${data?._id}`);
+    setFlyers(res.data.data);
+  }
 
   if (loading) {
     return <p className="text-center mt-8">Loading...</p>;
@@ -152,6 +161,17 @@ export default function Page() {
         )}
         {dialog.value === "delete_profile" && data != null && (
           <DeleteModal data={data} setModal={setDialog} />
+        )}
+        {dialog.value === "delete_post" && data != null && (
+          <DeletePostModal data={id} setModal={setDialog} userId={data._id} />
+        )}
+        {dialog.value === "delete_flyer" && (
+          <DeleteFlyerModal
+            flyerId={selectedFlyerId}
+            flyerImage={selectedFlyerImage}
+            setModal={setDialog}
+            refreshFlyers={loadFlyers} // your refetch function
+          />
         )}
       </Dialog>
 
@@ -313,19 +333,47 @@ export default function Page() {
         {data?.category === "talent" ? (
           images.length > 0 ? (
             images.map((pic, i) => (
-              <CustomCard key={i} image={pic} profile={true} />
+              <div className="relative " key={i}>
+                <Button
+                  onClick={() => [
+                    setDialog((p) => ({
+                      ...p,
+                      state: true,
+                      value: "delete_post",
+                    })),
+                    setId(pic),
+                  ]}
+                  className="absolute z-50 right-1 top-1 bg-muted"
+                >
+                  <X />
+                </Button>
+                <CustomCard image={pic} profile={true} />
+              </div>
             ))
           ) : (
             <p>No Portfolio Pictures</p>
           )
         ) : flyers.length > 0 ? (
           flyers.map((f, i) => (
-            <CustomCard
-              key={i}
-              image={f.flyer_image}
-              primary_text={f.profession}
-              secondary_text={f.company_name}
-            />
+            <div className="relative " key={i}>
+              <Button
+                onClick={() => {
+                  setSelectedFlyerId(f._id);
+                  setSelectedFlyerImage(f.flyer_image || "");
+                  setDialog({ state: true, value: "delete_flyer" });
+                }}
+                className="absolute right-1 top-1 bg-muted z-50"
+              >
+                <X />
+              </Button>
+
+              <CustomCard
+                key={i}
+                image={f.flyer_image}
+                primary_text={f.profession}
+                secondary_text={f.company_name}
+              />
+            </div>
           ))
         ) : (
           <p>No Flyers Yet</p>
@@ -732,6 +780,158 @@ function DeleteModal({
           ) : (
             "Delete"
           )}
+        </Button>
+      </div>
+    </DialogContent>
+  );
+}
+function DeletePostModal({
+  data,
+  setModal,
+  userId,
+}: {
+  data: string; // the image URL
+  userId: string; // the logged-in user's ID
+  setModal: React.Dispatch<
+    React.SetStateAction<{ state: boolean; value: string }>
+  >;
+}) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  async function deletePost() {
+    try {
+      setLoading(true);
+
+      // 🧼 REMOVE IMAGE using PUT update API
+      await axios.put("/api/user", {
+        id: userId,
+        portfolio_pictures_remove: [data],
+      });
+
+      toast.success("Image has been removed.");
+      setModal({ state: false, value: "" });
+      window.location.reload();
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast.error("Failed to remove the image. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <DialogContent className="flex flex-col gap-10">
+      <DialogHeader className="flex flex-col items-center">
+        <DialogTitle>Remove this picture?</DialogTitle>
+        <DialogDescription>
+          Click yes to continue or cancel to go back.
+        </DialogDescription>
+      </DialogHeader>
+
+      <img src={data} className="h-[400px] w-fit object-contain rounded-md" />
+
+      <div className="flex w-full gap-2">
+        <Button
+          onClick={deletePost}
+          variant="destructive"
+          className="w-1/2"
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <Loader2Icon className="animate-spin" />
+              Please wait
+            </>
+          ) : (
+            "Delete"
+          )}
+        </Button>
+
+        <Button
+          onClick={() => setModal({ state: false, value: "" })}
+          className="w-1/2"
+          disabled={loading}
+        >
+          Cancel
+        </Button>
+      </div>
+    </DialogContent>
+  );
+}
+function DeleteFlyerModal({
+  flyerId,
+  flyerImage,
+  setModal,
+  refreshFlyers,
+}: {
+  flyerId: string; // flyer _id from database
+  flyerImage: string; // flyer image URL
+  setModal: React.Dispatch<
+    React.SetStateAction<{ state: boolean; value: string }>
+  >;
+  refreshFlyers: () => void; // function to reload flyers list
+}) {
+  const [loading, setLoading] = useState(false);
+
+  async function deleteFlyer() {
+    try {
+      setLoading(true);
+
+      // ❌ Delete flyer
+      await axios.delete(`/api/flyer?id=${flyerId}`);
+
+      toast.success("Flyer has been deleted.");
+      setModal({ state: false, value: "" });
+
+      // 🔄 Refresh flyers list in UI
+      refreshFlyers();
+    } catch (error) {
+      console.error("Delete flyer error:", error);
+      toast.error("Failed to delete the flyer. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <DialogContent className="flex flex-col gap-10">
+      <DialogHeader className="flex flex-col items-center">
+        <DialogTitle>Delete this flyer?</DialogTitle>
+        <DialogDescription>
+          This action cannot be undone. Click delete to continue.
+        </DialogDescription>
+      </DialogHeader>
+
+      {/* Preview flyer */}
+      <img
+        src={flyerImage}
+        className="h-[400px] w-fit object-contain rounded-md"
+      />
+
+      <div className="flex w-full gap-2">
+        <Button
+          onClick={deleteFlyer}
+          variant="destructive"
+          className="w-1/2"
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <Loader2Icon className="animate-spin" />
+              Please wait
+            </>
+          ) : (
+            "Delete"
+          )}
+        </Button>
+
+        <Button
+          onClick={() => setModal({ state: false, value: "" })}
+          className="w-1/2"
+          disabled={loading}
+        >
+          Cancel
         </Button>
       </div>
     </DialogContent>
