@@ -121,7 +121,7 @@ export default function Home() {
         <div className="flex flex-wrap gap-3">
           {user === null ? (
             <Button variant={"secondary"} onClick={() => router.push("/auth")}>
-              ✨Become a Talent
+              Registration for Talent
             </Button>
           ) : (
             <Button
@@ -138,7 +138,7 @@ export default function Home() {
         <div className="flex flex-wrap gap-3">
           {user === null ? (
             <Button variant={"secondary"} onClick={() => router.push("/auth")}>
-              Become a Recruiter
+              Registration for Recruiter
             </Button>
           ) : (
             <Button

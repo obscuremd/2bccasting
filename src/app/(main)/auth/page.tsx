@@ -206,19 +206,19 @@ function PolicyLinks() {
       </button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-3xl h-[80vh] flex flex-col">
+        <DialogContent className="max-w-3xl h-[80vh] flex flex-col bg-white overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
               {doc === "privacy" ? "General Policy" : "Terms and Conditions"}
             </DialogTitle>
           </DialogHeader>
-          <iframe
+          <img
             src={
               doc === "privacy"
-                ? "/PrivacyPolicy.pdf"
-                : "/TermsAndConditions.pdf"
+                ? "/PrivacyYPolicy.jpg"
+                : "/termsandcondition.jpg"
             }
-            className="flex-1 w-full rounded-md"
+            className="flex-1 w-full rounded-md border border-gray-200"
           />
         </DialogContent>
       </Dialog>
