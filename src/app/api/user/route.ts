@@ -60,27 +60,42 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(users, { status: 200 });
     }
 
-    // ✅ Portfolio view — each portfolio picture becomes its own entry
     if (portfolio === "ordered") {
       const skip = (page - 1) * limit;
 
       const results = await User.aggregate([
         {
+          // ✅ Only visible users with profile pictures
           $match: {
-            category: role, // talent or scout
-            portfolio_pictures: { $exists: true, $ne: [] },
-            profile_visibility: true, // only visible
+            category: role,
+            profile_visibility: true,
+            profile_picture: { $exists: true, $ne: "" },
           },
         },
-        // Unwind so each picture becomes its own document
-        { $unwind: "$portfolio_pictures" },
+
+        // ✅ Sort by newest accounts FIRST
+        { $sort: { createdAt: -1 } },
+
+        // ✅ Pagination (now stable)
+        { $skip: skip },
+        { $limit: limit },
+
+        // ✅ Shape response for frontend
         {
           $project: {
-            picture: "$portfolio_pictures",
+            _id: 1,
             fullname: 1,
-            role: 1,
+            role: "$category",
             location: 1,
             gender: 1,
+            picture: "$profile_picture",
+            date_of_birth: 1,
+          },
+        },
+
+        // ✅ Compute age
+        {
+          $addFields: {
             age: {
               $dateDiff: {
                 startDate: "$date_of_birth",
@@ -90,10 +105,13 @@ export async function GET(req: NextRequest) {
             },
           },
         },
-        // Sort alphabetically by picture filename or URL
-        { $sort: { picture: 1 } },
-        { $skip: skip },
-        { $limit: limit },
+
+        // ✅ Remove DOB from final payload
+        {
+          $project: {
+            date_of_birth: 0,
+          },
+        },
       ]);
 
       return NextResponse.json(

@@ -42,7 +42,11 @@ export default function Page() {
       });
 
       if (response.status === "success") {
-        setData((prev) => [...prev, ...response.data]);
+        setData((prev) => {
+          const ids = new Set(prev.map((u) => u._id));
+          return [...prev, ...response.data.filter((u) => !ids.has(u._id))];
+        });
+
         setHasMore(response.data.length > 0);
         setPage((prev) => prev + 1);
       } else {

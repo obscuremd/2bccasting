@@ -19,13 +19,9 @@ export default function CustomCard({
   profile = false,
   bottom = false,
 }: Props) {
-  const [visible, setVisible] = useState(false);
-
   return (
     <div
       className="relative mb-6 break-inside-avoid rounded-2xl overflow-hidden cursor-pointer"
-      onMouseEnter={() => !profile && setVisible(true)}
-      onMouseLeave={() => !profile && setVisible(false)}
       style={{
         width: "auto",
         height: "auto",
@@ -36,16 +32,17 @@ export default function CustomCard({
         src={image}
         alt={primary_text}
         className={`object-cover rounded-2xl ${
-          profile ? "w-full md:w-[400px]" : "w-full md:w-[200px]"
+          profile ? "w-full md:w-[400px]" : "w-full"
         }`}
         transition={{ duration: 0.6, ease: "easeInOut" }}
       />
-      {/* If bottom=true → show static bottom text (no animation) */}
-      {bottom && (
+
+      {/* Only show animated overlay in non-profile & non-bottom modes */}
+      {!profile && (
         <div
           className="absolute bottom-0 left-0 w-full p-4 
-               bg-[linear-gradient(180deg,rgba(255,255,255,0)_-40.42%,#7F7F81_198.33%)]
-               backdrop-blur-[8.5px] text-white"
+                 bg-[linear-gradient(180deg,rgba(255,255,255,0)_-40.42%,#7F7F81_198.33%)]
+                 backdrop-blur-[8.5px] text-white"
         >
           <p className="text-title2 font-bold">{primary_text}</p>
           <p className="text-body font-medium">{secondary_text}</p>
@@ -54,27 +51,6 @@ export default function CustomCard({
           </p>
         </div>
       )}
-
-      {/* Only show animated overlay in non-profile & non-bottom modes */}
-      <AnimatePresence>
-        {!bottom && !profile && visible && (
-          <motion.div
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 50, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="absolute bottom-0 left-0 w-full p-4 
-                 bg-[linear-gradient(180deg,rgba(255,255,255,0)_-40.42%,#7F7F81_198.33%)]
-                 backdrop-blur-[8.5px] text-white"
-          >
-            <p className="text-title2 font-bold">{primary_text}</p>
-            <p className="text-body font-medium">{secondary_text}</p>
-            <p className="text-body font-medium whitespace-pre-line">
-              {category}
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
