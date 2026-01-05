@@ -10,6 +10,8 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
+import { AnimatePresence, motion } from "motion/react";
+import Image from "next/image";
 
 export default function Home() {
   const router = useRouter();
@@ -17,6 +19,25 @@ export default function Home() {
   const [data, setData] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+
+  const media = [
+    "https://firebasestorage.googleapis.com/v0/b/social-media-fd6de.appspot.com/o/bccasting%2FIMG_7104.PNG?alt=media&token=4e3fbe71-583f-4580-b90f-6da5d409bd4e",
+
+    "https://firebasestorage.googleapis.com/v0/b/social-media-fd6de.appspot.com/o/bccasting%2FIMG_7103.PNG?alt=media&token=7491de8c-197f-4056-baeb-e5de00f8b4a3",
+
+    "https://firebasestorage.googleapis.com/v0/b/social-media-fd6de.appspot.com/o/bccasting%2FIMG_7102.PNG?alt=media&token=4c8ef08b-6030-4e71-8ccd-46b90e6992ef",
+    "https://firebasestorage.googleapis.com/v0/b/social-media-fd6de.appspot.com/o/bccasting%2FIMG_7100.PNG?alt=media&token=7af2388e-4b81-4cad-aa28-3ddf21e86f91",
+  ];
+
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % media.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [media.length]);
 
   useEffect(() => {
     async function init() {
@@ -183,6 +204,24 @@ export default function Home() {
           >
             Get membership slots
           </Button>
+        </div>
+        <div className="overflow-x-hidden min-h-[30vh] md:min-h-[60vh]">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, x: 200 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -200 }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+              className=" inset-0"
+            >
+              <img
+                src={media[index]}
+                alt={`hero image ${index}`}
+                className="object-cover object-top rounded-4xl w-full h-fit"
+              />
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
       <ContactUsForm />

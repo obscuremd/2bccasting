@@ -85,7 +85,7 @@ export async function GET(req: NextRequest) {
           $project: {
             _id: 1,
             fullname: 1,
-            role: "$category",
+            role: "$role",
             location: 1,
             gender: 1,
             picture: "$profile_picture",
