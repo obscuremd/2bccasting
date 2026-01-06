@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import Header from "@/components/local/header";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
+import { Instagram, Tiktok, Whatsapp, Youtube } from "iconoir-react";
 
 export default function Home() {
   const router = useRouter();
@@ -222,6 +224,54 @@ export default function Home() {
               />
             </motion.div>
           </AnimatePresence>
+        </div>
+        <div className="space-y-2">
+          <p className="text-lg">Follow Us On</p>
+          <div className="flex gap-4 flex-wrap">
+            {/* WhatsApp */}
+            <SocialIcon
+              href="https://wa.me/2347047777561"
+              label="WhatsApp"
+              bg="bg-[#25D366]/10"
+              hover="hover:bg-[#25D366]/20"
+            >
+              <Whatsapp className="h-5 w-5 text-[#25D366]" />
+              <p>Whatsapp</p>
+            </SocialIcon>
+
+            {/* TikTok */}
+            <SocialIcon
+              href="https://www.tiktok.com/@bira2186?_t=ZM-90Jom7zrZHP&_r=1"
+              label="TikTok"
+              bg="bg-[#69C9D0]/10"
+              hover="hover:bg-[#EE1D52]/10"
+            >
+              <Tiktok className="h-5 w-5 text-[#EE1D52] dark:text-[#69C9D0]" />
+              <p>TikTok</p>
+            </SocialIcon>
+
+            {/* YouTube */}
+            <SocialIcon
+              href="https://youtube.com/@agencybira86?si=xKktbOoa7UtHer9k"
+              label="YouTube"
+              bg="bg-[#FF0000]/10"
+              hover="hover:bg-[#FF0000]/20"
+            >
+              <Youtube className="h-5 w-5 text-[#FF0000]" />
+              <p>Youtube</p>
+            </SocialIcon>
+
+            {/* Instagram */}
+            <SocialIcon
+              href="https://www.instagram.com/agencybira?igsh=Ym5laDlqa3l6MjZh"
+              label="Instagram"
+              bg="bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF]"
+              hover="hover:opacity-90"
+            >
+              <Instagram className="h-5 w-5 text-white" />
+              <p>Instagram</p>
+            </SocialIcon>
+          </div>
         </div>
       </div>
       <ContactUsForm />
@@ -436,5 +486,19 @@ function ContactUsForm() {
         </div>
       </form>
     </div>
+  );
+}
+
+function SocialIcon({ href, label, bg, hover, children }: any) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      className={` w-fit px-4 py-2 rounded-full flex gap-2 items-center justify-center ${bg} ${hover} transition-all duration-200 hover:scale-105`}
+    >
+      {children}
+    </a>
   );
 }
