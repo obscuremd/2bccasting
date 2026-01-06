@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { Instagram, Tiktok, Whatsapp, Youtube } from "iconoir-react";
+import { Facebook, Instagram, Tiktok, Whatsapp, Youtube } from "iconoir-react";
 
 export default function Home() {
   const router = useRouter();
@@ -227,6 +227,16 @@ export default function Home() {
         <div className="space-y-2">
           <p className="text-lg">Follow Us On</p>
           <div className="flex gap-4 flex-wrap">
+            {/* Facebook */}
+            <SocialIcon
+              href="https://www.facebook.com/share/1DodC2yEyS/"
+              label="TikTok"
+              bg="bg-[#3b63b4]/20"
+              hover="hover:bg-[#EE1D52]/10"
+            >
+              <Facebook className="h-5 w-5 text-[#EE1D52] dark:text-[#3b63b4]" />
+              <p>Facebook</p>
+            </SocialIcon>
             {/* TikTok */}
             <SocialIcon
               href="https://www.tiktok.com/@bira2186?_t=ZM-90Jom7zrZHP&_r=1"
