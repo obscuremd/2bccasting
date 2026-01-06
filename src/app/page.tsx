@@ -207,22 +207,21 @@ export default function Home() {
             Get membership slots
           </Button>
         </div>
-        <div className="overflow-x-hidden min-h-[30vh] md:min-h-[60vh]">
+        <div className="relative w-full overflow-hidden h-[40vh] md:h-[90vh]">
           <AnimatePresence mode="wait">
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, x: 200 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -200 }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
-              className=" inset-0"
-            >
-              <img
+            {media[index] && (
+              <motion.img
+                key={media[index]}
                 src={media[index]}
                 alt={`hero image ${index}`}
-                className="object-cover object-top rounded-4xl w-full h-fit"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -50 }}
+                transition={{ duration: 0.8, ease: "easeInOut" }}
+                className="w-full h-full rounded-4xl object-cover object-top"
+                style={{ display: "block" }}
               />
-            </motion.div>
+            )}
           </AnimatePresence>
         </div>
         <div className="space-y-2">
