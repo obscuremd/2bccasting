@@ -227,17 +227,6 @@ export default function Home() {
         <div className="space-y-2">
           <p className="text-lg">Follow Us On</p>
           <div className="flex gap-4 flex-wrap">
-            {/* WhatsApp */}
-            <SocialIcon
-              href="https://wa.me/2347047777561"
-              label="WhatsApp"
-              bg="bg-[#25D366]/10"
-              hover="hover:bg-[#25D366]/20"
-            >
-              <Whatsapp className="h-5 w-5 text-[#25D366]" />
-              <p>Whatsapp</p>
-            </SocialIcon>
-
             {/* TikTok */}
             <SocialIcon
               href="https://www.tiktok.com/@bira2186?_t=ZM-90Jom7zrZHP&_r=1"
