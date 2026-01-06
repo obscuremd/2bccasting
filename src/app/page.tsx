@@ -261,7 +261,7 @@ export default function Home() {
 
             {/* Instagram */}
             <SocialIcon
-              href="https://www.instagram.com/agencybira?igsh=Ym5laDlqa3l6MjZh"
+              href="https://www.instagram.com/bccastings?igsh=MXVnam41NmpqcGp6Mw=="
               label="Instagram"
               bg="bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF]"
               hover="hover:opacity-90"
