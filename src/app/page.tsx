@@ -239,7 +239,7 @@ export default function Home() {
             </SocialIcon>
             {/* TikTok */}
             <SocialIcon
-              href="tiktok.com/@bccastings"
+              href="https://www.tiktok.com/@bccastings"
               label="TikTok"
               bg="bg-[#69C9D0]/10"
               hover="hover:bg-[#EE1D52]/10"
