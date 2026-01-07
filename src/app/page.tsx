@@ -224,53 +224,7 @@ export default function Home() {
             )}
           </AnimatePresence>
         </div>
-        <div className="space-y-2">
-          <p className="text-lg">Follow Us On</p>
-          <div className="flex gap-4 flex-wrap">
-            {/* Facebook */}
-            <SocialIcon
-              href="https://www.facebook.com/share/1DodC2yEyS/"
-              label="TikTok"
-              bg="bg-[#3b63b4]/20"
-              hover="hover:bg-[#EE1D52]/10"
-            >
-              <Facebook className="h-5 w-5 text-[#EE1D52] dark:text-[#3b63b4]" />
-              <p>Facebook</p>
-            </SocialIcon>
-            {/* TikTok */}
-            <SocialIcon
-              href="https://www.tiktok.com/@bccastings"
-              label="TikTok"
-              bg="bg-[#69C9D0]/10"
-              hover="hover:bg-[#EE1D52]/10"
-            >
-              <Tiktok className="h-5 w-5 text-[#EE1D52] dark:text-[#69C9D0]" />
-              <p>TikTok</p>
-            </SocialIcon>
 
-            {/* YouTube */}
-            <SocialIcon
-              href="https://youtube.com/@agencybira86?si=xKktbOoa7UtHer9k"
-              label="YouTube"
-              bg="bg-[#FF0000]/10"
-              hover="hover:bg-[#FF0000]/20"
-            >
-              <Youtube className="h-5 w-5 text-[#FF0000]" />
-              <p>Youtube</p>
-            </SocialIcon>
-
-            {/* Instagram */}
-            <SocialIcon
-              href="https://www.instagram.com/bccastings?igsh=MXVnam41NmpqcGp6Mw=="
-              label="Instagram"
-              bg="bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF]"
-              hover="hover:opacity-90"
-            >
-              <Instagram className="h-5 w-5 text-white" />
-              <p>Instagram</p>
-            </SocialIcon>
-          </div>
-        </div>
         <div className="flex flex-col gap-2.5 justify-center w-full pt-11">
           <div className="flex gap-2.5 items-center">
             <hr className="md:w-[244px] w-[50px] bg-foreground" />
@@ -286,6 +240,55 @@ export default function Home() {
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             ></iframe>
+          </div>
+          <div className="space-y-4 mt-11">
+            <p className="text-lg">Follow Us @bccastings on</p>
+            <hr className="md:w-[244px] w-[50px] bg-foreground" />
+
+            <div className="flex gap-4 flex-wrap">
+              {/* Facebook */}
+              <SocialIcon
+                href="https://www.facebook.com/share/1DodC2yEyS/"
+                label="TikTok"
+                bg="bg-[#3b63b4]/20"
+                hover="hover:bg-[#EE1D52]/10"
+              >
+                <Facebook className="h-5 w-5 text-[#EE1D52] dark:text-[#3b63b4]" />
+                <p>Facebook</p>
+              </SocialIcon>
+              {/* TikTok */}
+              <SocialIcon
+                href="https://www.tiktok.com/@bccastings"
+                label="TikTok"
+                bg="bg-[#69C9D0]/10"
+                hover="hover:bg-[#EE1D52]/10"
+              >
+                <Tiktok className="h-5 w-5 text-[#EE1D52] dark:text-[#69C9D0]" />
+                <p>TikTok</p>
+              </SocialIcon>
+
+              {/* YouTube */}
+              <SocialIcon
+                href="https://youtube.com/@agencybira86?si=xKktbOoa7UtHer9k"
+                label="YouTube"
+                bg="bg-[#FF0000]/10"
+                hover="hover:bg-[#FF0000]/20"
+              >
+                <Youtube className="h-5 w-5 text-[#FF0000]" />
+                <p>Youtube</p>
+              </SocialIcon>
+
+              {/* Instagram */}
+              <SocialIcon
+                href="https://www.instagram.com/bccastings?igsh=MXVnam41NmpqcGp6Mw=="
+                label="Instagram"
+                bg="bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF]"
+                hover="hover:opacity-90"
+              >
+                <Instagram className="h-5 w-5 text-white" />
+                <p>Instagram</p>
+              </SocialIcon>
+            </div>
           </div>
         </div>
       </div>
