@@ -271,6 +271,23 @@ export default function Home() {
             </SocialIcon>
           </div>
         </div>
+        <div className="flex flex-col gap-2.5 justify-center w-full pt-11">
+          <div className="flex gap-2.5 items-center">
+            <hr className="md:w-[244px] w-[50px] bg-foreground" />
+            <p className="md:text-h3 text-h5 font-semibold">Watch Our Video</p>
+          </div>
+
+          <div className="relative w-full aspect-video max-w-4xl mx-auto rounded-xl overflow-hidden shadow-lg">
+            <iframe
+              className="absolute inset-0 w-full h-full"
+              src="https://www.youtube.com/embed/wWnas5of4bg"
+              title="BC Castings Video"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </div>
       </div>
       <ContactUsForm />
     </div>
