@@ -207,22 +207,8 @@ export default function Home() {
             Get membership slots
           </Button>
         </div>
-        <div className="relative w-full overflow-hidden h-[40vh] md:h-[90vh]">
-          <AnimatePresence mode="wait">
-            {media[index] && (
-              <motion.img
-                key={media[index]}
-                src={media[index]}
-                alt={`hero image ${index}`}
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -50 }}
-                transition={{ duration: 0.8, ease: "easeInOut" }}
-                className="w-full h-full rounded-4xl object-cover object-top"
-                style={{ display: "block" }}
-              />
-            )}
-          </AnimatePresence>
+        <div className="relative w-full overflow-hidden rounded-4xl">
+          <AnimateHeightImage src={media[index]} index={index} />
         </div>
 
         <div className="flex flex-col gap-2.5 justify-center w-full pt-11">
@@ -518,5 +504,33 @@ function SocialIcon({ href, label, bg, hover, children }: any) {
     >
       {children}
     </a>
+  );
+}
+
+function AnimateHeightImage({ src, index }: { src: string; index: number }) {
+  const [height, setHeight] = useState<number | null>(null);
+
+  return (
+    <div
+      className="relative w-full transition-[height] duration-500 ease-in-out"
+      style={{ height: height ?? "auto" }}
+    >
+      <AnimatePresence mode="wait">
+        <motion.img
+          key={src}
+          src={src}
+          alt={`hero image ${index}`}
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -40 }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+          onLoad={(e) => {
+            const img = e.currentTarget;
+            setHeight(img.offsetHeight);
+          }}
+          className="absolute inset-0 w-full h-auto object-contain rounded-4xl"
+        />
+      </AnimatePresence>
+    </div>
   );
 }
