@@ -41,15 +41,15 @@ type FormFields = {
 
 export default function Page() {
   const pricing = [
-    { roles: "1 ROLE", ngn: "₦20,000", gh: "200GH₵", usd: "$20" },
-    { roles: "3 ROLES", ngn: "₦80,000", gh: "800GH₵", usd: "$80" },
-    { roles: "7 ROLES", ngn: "₦250,000", gh: "2500GH₵", usd: "$250" },
-    { roles: "9 ROLES", ngn: "₦300,000", gh: "3000GH₵", usd: "$300" },
-    { roles: "11 ROLES", ngn: "₦350,000", gh: "3500GH₵", usd: "$350" },
-    { roles: "15 ROLES", ngn: "₦500,000", gh: "5000GH₵", usd: "$500" },
-    { roles: "18 ROLES", ngn: "₦700,000", gh: "7000GH₵", usd: "$700" },
-    { roles: "20 ROLES", ngn: "₦1M", gh: "10,000GH₵", usd: "$1,000" },
-    { roles: "UNLIMITED", ngn: "₦10M", gh: "100,000GH₵", usd: "$10,000" },
+    { roles: "1 ROLE", ngn: "₦10,000", gh: "100GH₵", usd: "$10" },
+    { roles: "3 ROLES", ngn: "₦28,000", gh: "280GH₵", usd: "$28" },
+    { roles: "5 ROLES", ngn: "₦49,000", gh: "490GH₵", usd: "$49" },
+    { roles: "10 ROLES", ngn: "₦140,000", gh: "1,400GH₵", usd: "$140" },
+    { roles: "14 ROLES", ngn: "₦180,000", gh: "1,800GH₵", usd: "$180" },
+    { roles: "18 ROLES", ngn: "₦290,000", gh: "2,900GH₵", usd: "$290" },
+    { roles: "22 ROLES", ngn: "₦450,000", gh: "4,500GH₵", usd: "$450" },
+    { roles: "25 ROLES", ngn: "₦600,000", gh: "6,000GH₵", usd: "$600" },
+    { roles: "UNLIMITED", ngn: "₦1M", gh: "10,000GH₵", usd: "$1,000" },
   ];
 
   const [form, setForm] = useState<FormFields>({
@@ -105,16 +105,16 @@ export default function Page() {
     <div>
       <header className="mb-8">
         <h1 className="text-3xl font-extrabold">
-          BC CASTINGS — Get Movie Role Slot
+          BC CASTINGS — ACTING ROLE SLOT
         </h1>
         <p className="text-sm text-muted-foreground mt-2 max-w-2xl">
-          We are Nigerian&apos;s Leading Casting agencies based in Lagos and
-          Accra with experience in Movies Production, Home Video, Skit and
-          Musical Video shoot.If you are looking for exposure and recognition in
-          Nollywood, start by featuring in upcoming Movies. Get a Movie Role or
-          Skit Role and Secure your spot by getting our Movie Roles Membership
-          Subscription or Movie Roles Slots and start featuring in Upcoming
-          Movies.
+          Are you an upcoming actor and you are looking for a platform to
+          showcase your talent to the world and get noticed, this is an
+          opportunity for you to step into the spotlight and feature with
+          nollywood stars. Contact us via whatsapp number +234 704 777 561 to
+          pick up your registration form and pay for the amount of roles to the
+          account number below. Once payment is confirmed you will get your
+          scripts, location and start acting.
         </p>
       </header>
 
@@ -123,9 +123,10 @@ export default function Page() {
         <div className="flex flex-col md:flex-row gap-6">
           <Card className="flex-1 md:basis-2/3">
             <CardHeader>
-              <CardTitle>Pricing</CardTitle>
-              <CardDescription>
-                Choose one of the role slot packages below.
+              <CardTitle>ACTING ROLES PRICELIST</CardTitle>
+              <CardDescription className="capitalize">
+                Select the amount of acting roles suitable and pay to account
+                number below
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -152,21 +153,27 @@ export default function Page() {
 
               <div className="mt-6 space-y-4">
                 <p className="text-sm text-muted-foreground">
-                  How to register (summary):
+                  How to register:
                 </p>
                 <ol className="list-decimal pl-5 text-sm text-muted-foreground space-y-2">
-                  <li>Select a package and pay to the account number below.</li>
                   <li>
-                    Send evidence of payment (name of depositor, amount, date)
-                    to the WhatsApp number or email.
+                    Select the acting slot amount that suits you and make
+                    payment to the account number provided below.
                   </li>
                   <li>
-                    After confirmation you will be added to the VIP WhatsApp
-                    group and receive a membership form and pass code.
+                    Send evidence of payment (name of depositor, number of role
+                    slots, and date of payment) via WhatsApp at{" "}
+                    <strong>+234 704 777 561</strong> or email{" "}
+                    <strong>nigeriacasting@gmail.com</strong>.
                   </li>
                   <li>
-                    Use the pass code on-site to claim roles. Lost pass codes
-                    cost $10 to replace.
+                    Once payment is confirmed, you will receive your membership
+                    card, registration form, location details, and a passcode.
+                  </li>
+                  <li>
+                    Come to the location with your membership card and passcode.
+                    Replacement of a lost membership card or passcode costs{" "}
+                    <strong>₦2,000</strong>.
                   </li>
                 </ol>
               </div>
