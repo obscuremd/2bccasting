@@ -108,13 +108,11 @@ export default function Page() {
           BC CASTINGS — ACTING ROLE SLOT
         </h1>
         <p className="text-sm text-muted-foreground mt-2 max-w-2xl">
-          Are you an upcoming actor and you are looking for a platform to
-          showcase your talent to the world and get noticed, this is an
-          opportunity for you to step into the spotlight and feature with
-          nollywood stars. Contact us via whatsapp number +234 704 777 561 to
-          pick up your registration form and pay for the amount of roles to the
-          account number below. Once payment is confirmed you will get your
-          scripts, location and start acting.
+          Are you an Aspiring actor ready to be featured in Nigerian films? This
+          is your opportunity to register and get a role immediately. Pickup
+          your registration form via WhatsApp +234704777561 and pay Amount of
+          Roles Slot suitable to the account number below. Once payment is
+          confirmed you will get your acting script and location.
         </p>
       </header>
 
