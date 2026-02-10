@@ -169,7 +169,7 @@ function NDialog({
 }) {
   const [email, setEmail] = useState(loggedUser?.email || "");
   const [phoneNumber, setPhoneNumber] = useState(
-    loggedUser?.phone_number || ""
+    loggedUser?.phone_number || "",
   );
   const [loading, setLoading] = useState(false);
 
@@ -183,7 +183,7 @@ function NDialog({
       setLoading(true);
 
       const res = await axios.post("/api/email", {
-        to: "support@bccastings.com",
+        to: "nigeriacasting.com",
         subject: "Contact Information Request",
         body: `
           <p>A user has requested the contact information of the model <b>${
@@ -202,7 +202,7 @@ function NDialog({
 
       if (res.status === 200) {
         toast.success(
-          "✅ Your Request has been Received you will be contacted within 24hrs"
+          "✅ Your Request has been Received you will be contacted within 24hrs",
         );
       } else {
         toast.error("❌ Failed to send request. Please try again.");
@@ -262,8 +262,8 @@ function NDialog({
         {loading
           ? "Sending..."
           : loggedUser
-          ? "Send Request"
-          : "Request Contact Info"}
+            ? "Send Request"
+            : "Request Contact Info"}
       </Button>
     </DialogContent>
   );

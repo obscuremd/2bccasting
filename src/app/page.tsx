@@ -350,7 +350,7 @@ function ContactUsForm() {
 
       if (res.status === 200) {
         toast.success(
-          "Thanks for the message We will contact you within 24hrs"
+          "Thanks for the message We will contact you within 24hrs",
         );
         setForm({
           name: "",
